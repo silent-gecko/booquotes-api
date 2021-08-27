@@ -1,7 +1,7 @@
 # BooQuotes API
 This API allows retrieving literary quotes from data collection.
 
-:warning: This is example of REST API I'm developing by myself.
+:warning: This is an example of REST API I'm developing by myself.
 It exists solely for me to improve and show my skills to the others. 
 Personal use only.
 
