@@ -28,4 +28,13 @@ class Quote extends Model
     protected $fillable = [
         'text', 'book_id'
     ];
+
+
+    /**
+     * Get the book of the quote.
+     */
+    public function book()
+    {
+        return $this->belongsTo(Book::class);
+    }
 }

@@ -35,4 +35,21 @@ class Book extends Model
     protected $fillable = [
         'title', 'description', 'author_id'
     ];
+
+
+    /**
+     * Get the author of the book.
+     */
+    public function author()
+    {
+        return $this->belongsTo(Author::class);
+    }
+
+    /**
+     * Get quotes of the book.
+     */
+    public function quotes()
+    {
+        return $this->hasMany(Quote::class);
+    }
 }

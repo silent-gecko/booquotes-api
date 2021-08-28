@@ -35,4 +35,21 @@ class Author extends Model
     protected $fillable = [
         'name', 'bio', 'year_of_birth', 'year_of_death'
     ];
+
+
+    /**
+     * Get books for the author.
+     */
+    public function books()
+    {
+        return $this->hasMany(Book::class);
+    }
+
+    /**
+     * Get all quotes of the author
+     */
+    public function quotes()
+    {
+        return $this->hasManyThrough(Quote::class, Book::class);
+    }
 }
