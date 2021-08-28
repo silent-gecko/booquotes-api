@@ -26,4 +26,13 @@ class Author extends Model
      * @var string
      */
     protected $keyType = 'string';
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'name', 'bio', 'year_of_birth', 'year_of_death'
+    ];
 }
