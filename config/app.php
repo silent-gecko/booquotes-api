@@ -123,6 +123,6 @@ return [
 
     'cipher' => 'AES-256-CBC',
 
-    'api_key_header_name' => env('APP_API_KEY_HEADER', 'X-BOOQUOTES-API-KEY'),
+    'api_key_header_name' => env('APP_API_KEY_HEADER', 'X-BooQuotes-Api-Key'),
 
 ];
