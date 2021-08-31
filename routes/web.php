@@ -14,12 +14,12 @@
 */
 
 $router->group(['prefix' => 'api/v1'], function () use ($router) {
-    $router->get('/', ['as' => 'v1_home', function () use ($router) {
+    $router->get('/', ['as' => 'v1.home', function () use ($router) {
         return response()->jsonHealthCheck();
     }]);
 
     $router->group(['middleware' => 'auth'], function () use ($router) {
-        $router->get('/authors', 'AuthorController@index');
-        $router->get('/authors/{uuid}', 'AuthorController@get');
+        $router->get('/authors', ['as' => 'v1.author.index', 'uses' => 'AuthorController@index']);
+        $router->get('/authors/{uuid}', ['as' => 'v1.author.get', 'uses' => 'AuthorController@get']);
     });
 });

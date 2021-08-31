@@ -7,7 +7,7 @@ class HealthCheckTest extends \TestCase
 {
     public function test_homepage_is_functioning()
     {
-        $this->get(route('v1_home'));
+        $this->get(route('v1.home'));
 
         $this->assertEquals(
             response()->jsonHealthCheck()->content(), $this->response->getContent()

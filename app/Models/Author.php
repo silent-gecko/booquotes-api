@@ -52,4 +52,21 @@ class Author extends Model
     {
         return $this->hasManyThrough(Quote::class, Book::class);
     }
+
+    public function getSelfLinkAttribute(): string
+    {
+        return route('v1.author.get', ['uuid' => $this->id]);
+    }
+
+    public function getBooksLinkAttribute(): string
+    {
+        // TODO: create link pattern
+        return 'books-link';
+    }
+
+    public function getQuotesLinkAttribute(): string
+    {
+        // TODO: create link pattern
+        return 'quotes-link';
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Http\Controllers\AuthorController;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -22,9 +23,9 @@ class AuthorResource extends JsonResource
             'died'  => $this->year_of_death,
             'bio'   => $this->bio,
             'links' => [
-                'self'   => 'link-value',
-                'books'  => 'link-value',
-                'quotes' => 'link-value',
+                'self'   => $this->self_link,
+                'books'  => $this->books_link,
+                'quotes' => $this->quotes_link,
             ]
         ];
     }
