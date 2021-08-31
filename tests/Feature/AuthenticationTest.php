@@ -16,7 +16,7 @@ class AuthenticationTest extends TestCase
     {
         $user = $this->createUser();
 
-        $this->get(route('home'), [config('app.api_key_header_name') => $user->token]);
+        $this->get('/api/v1/authors', [config('app.api_key_header_name') => $user->token]);
 
         $this->assertEquals(
             200, $this->response->getStatusCode()
@@ -28,7 +28,7 @@ class AuthenticationTest extends TestCase
         $user = $this->createUser();
         $invalidToken = substr_replace($user->token->toString(), 'aaaaa', -5);
 
-        $this->get(route('home'), [config('app.api_key_header_name') => $invalidToken]);
+        $this->get('/api/v1/authors', [config('app.api_key_header_name') => $invalidToken]);
 
         $this->assertEquals(
             401, $this->response->getStatusCode()
