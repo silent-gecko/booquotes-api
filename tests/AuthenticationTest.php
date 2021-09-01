@@ -1,8 +1,5 @@
 <?php
 
-namespace Feature;
-
-use TestCase;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
@@ -16,7 +13,7 @@ class AuthenticationTest extends TestCase
     {
         $user = $this->createUser();
 
-        $this->get('/api/v1/authors', [config('app.api_key_header_name') => $user->token]);
+        $this->get(route('v1.author.index'), [config('app.api_key_header_name') => $user->token]);
 
         $this->assertEquals(
             200, $this->response->getStatusCode()
@@ -28,7 +25,7 @@ class AuthenticationTest extends TestCase
         $user = $this->createUser();
         $invalidToken = substr_replace($user->token->toString(), 'aaaaa', -5);
 
-        $this->get('/api/v1/authors', [config('app.api_key_header_name') => $invalidToken]);
+        $this->get(route('v1.author.index'), [config('app.api_key_header_name') => $invalidToken]);
 
         $this->assertEquals(
             401, $this->response->getStatusCode()
