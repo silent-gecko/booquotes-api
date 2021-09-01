@@ -1,10 +1,11 @@
 <?php
+namespace V1\Controllers;
 
 use App\Models\User;
 use Symfony\Component\HttpFoundation\Response;
 use Laravel\Lumen\Testing\DatabaseTransactions;
 
-class AuthorControllerTest extends TestCase
+class AuthorControllerTest extends \TestCase
 {
     use DatabaseTransactions;
 

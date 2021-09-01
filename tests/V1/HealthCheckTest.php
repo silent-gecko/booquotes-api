@@ -1,6 +1,8 @@
 <?php
 
-class HealthCheckTest extends TestCase
+namespace V1;
+
+class HealthCheckTest extends \TestCase
 {
     public function test_homepage_is_functioning()
     {

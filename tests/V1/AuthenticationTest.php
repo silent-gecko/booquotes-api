@@ -1,11 +1,13 @@
 <?php
 
+namespace V1;
+
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Laravel\Lumen\Testing\DatabaseTransactions;
 
-class AuthenticationTest extends TestCase
+class AuthenticationTest extends \TestCase
 {
     use DatabaseTransactions;
 
