@@ -29,8 +29,12 @@ class QuotesFullDataSeeder extends Seeder
             while (($data = fgetcsv($file)) !== false) {
                 $data = array_combine($dataLegend, $data);
                 if ($data['author_name']) {
+                    $lastNameLetter = mb_strtolower(
+                        substr($data['author_name'], strrpos($data['author_name'], ' ') + 1, 1)
+                    );
                     $authorId = DB::table('authors')->insertGetId([
                         'name'          => $data['author_name'],
+                        'sort_index'    => $lastNameLetter,
                         'year_of_birth' => $data['birth_year'],
                         'year_of_death' => $data['death_year'] ?: null,
                         'bio'           => $data['bio'] ?: null,
