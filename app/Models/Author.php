@@ -36,6 +36,13 @@ class Author extends Model
         'name', 'bio', 'year_of_birth', 'year_of_death'
     ];
 
+    /**
+     * The number of models to return for pagination.
+     *
+     * @var int
+     */
+    protected $perPage = 10;
+
 
     /**
      * Get books for the author.

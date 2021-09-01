@@ -19,13 +19,28 @@ class AuthorResource extends JsonResource
     {
         return [
             'name'  => $this->name,
-            'born'  => $this->year_of_birth,
-            'died'  => $this->year_of_death,
-            'bio'   => $this->bio,
             'links' => [
                 'self'   => $this->self_link,
                 'books'  => $this->books_link,
                 'quotes' => $this->quotes_link,
+            ]
+        ];
+    }
+
+    /**
+     * Get additional data that should be returned with the resource array.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return array
+     */
+    public function with($request)
+    {
+        return [
+            'data' => [
+                'born' => $this->year_of_birth,
+                'died' => $this->year_of_death,
+                'bio'  => $this->bio,
             ]
         ];
     }
