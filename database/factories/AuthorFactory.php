@@ -24,7 +24,8 @@ class AuthorFactory extends Factory
         return [
             'name' => $this->faker->name,
             'year_of_birth' => $this->faker->year,
-            ''
+            'year_of_death' => $this->faker->year,
+            'bio' => $this->faker->realText(),
         ];
     }
 }
