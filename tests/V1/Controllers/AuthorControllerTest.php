@@ -2,6 +2,7 @@
 namespace V1\Controllers;
 
 use App\Models\User;
+use App\Models\Author;
 use Symfony\Component\HttpFoundation\Response;
 use Laravel\Lumen\Testing\DatabaseTransactions;
 
@@ -34,5 +35,28 @@ class AuthorControllerTest extends \TestCase
                     ]
                 ]
             ]);
+    }
+
+    public function test_show_returns_valid_status_with_valid_id()
+    {
+        $author = Author::create([
+            'name' => 'test absdef',
+            'year_of_birth' => 1900,
+            'year_of_death' => null,
+            'bio'           => 'test',
+        ]);
+        //$author->refresh();
+        dd($author->id);
+        /*$user = User::factory()->create();
+        $author = Author::firstWhere('name', '<>', null);
+        $this->actingAs($user)
+            ->json('get', route('v1.author.show', ['uuid' => $author->id]))
+            ->assertResponseStatus(Response::HTTP_OK);*/
+        $this->assertTrue(false);
+    }
+
+    public function test_show_returns_valid_status_with_invalid_id()
+    {
+        $this->assertTrue(false);
     }
 }
