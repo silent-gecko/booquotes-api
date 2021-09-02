@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Extensions\Traits\HasUuid;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Author extends Model
 {
-    use HasUuid;
+    use HasUuid, HasFactory;
 
     const SORT_INDEX_LENGTH = 3;
 
