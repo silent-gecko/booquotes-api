@@ -29,14 +29,13 @@ class QuotesFullDataSeeder extends Seeder
             while (($data = fgetcsv($file)) !== false) {
                 $data = array_combine($dataLegend, $data);
                 if ($data['author_name']) {
-
                     $author = Author::create([
                         'name'          => $data['author_name'],
                         'year_of_birth' => $data['birth_year'],
                         'year_of_death' => $data['death_year'] ?: null,
                         'bio'           => $data['bio'] ?: null,
                     ]);
-                    dd($author->id);
+                    $authorId = $author->id->toString();
                 }
                 if ($data['book_title']) {
                     $bookId = DB::table('books')->insertGetId([

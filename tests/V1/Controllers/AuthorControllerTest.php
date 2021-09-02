@@ -37,15 +37,9 @@ class AuthorControllerTest extends \TestCase
             ]);
     }
 
-    public function test_show_returns_valid_status_with_valid_id()
+    public function test_show_returns_valid_data_with_valid_id()
     {
-        $author = Author::create([
-            'name' => 'test absdef',
-            'year_of_birth' => 1900,
-            'year_of_death' => null,
-            'bio'           => 'test',
-        ]);
-        //$author->refresh();
+        $author = Author::factory()->create();
         dd($author->id);
         /*$user = User::factory()->create();
         $author = Author::firstWhere('name', '<>', null);
