@@ -13,7 +13,7 @@ class AuthorController extends Controller
         return new AuthorCollection(Author::orderBy('sort_index')->paginate());
     }
 
-    public function get(string $uuid)
+    public function show(string $uuid)
     {
         return new AuthorResource(Author::find($uuid));
     }

@@ -20,6 +20,6 @@ $router->group(['prefix' => 'api/v1'], function () use ($router) {
 
     $router->group(['middleware' => 'auth'], function () use ($router) {
         $router->get('/authors', ['as' => 'v1.author.index', 'uses' => 'AuthorController@index']);
-        $router->get('/authors/{uuid}', ['as' => 'v1.author.get', 'uses' => 'AuthorController@get']);
+        $router->get('/authors/{uuid}', ['as' => 'v1.author.show', 'uses' => 'AuthorController@show']);
     });
 });
