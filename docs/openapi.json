@@ -1,0 +1,476 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "BooQuotes API",
+    "description": "This API allows to retrieve literary quotes and related info from the data collection",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080/api/v1",
+      "description": "Local development server"
+    }
+  ],
+  "security": [
+    {
+      "ApiKeyAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "quotes",
+      "description": "Operations with Quotes"
+    },
+    {
+      "name": "books",
+      "description": "Every literary quote is related with its book. This is the list of operations with Books resource"
+    },
+    {
+      "name": "authors",
+      "description": "Every literary quote and book has an author. This section contains the list of methods for Authors recourse"
+    }
+  ],
+  "paths": {
+    "/quotes": {
+      "get": {
+        "tags": [
+          "quotes"
+        ],
+        "summary": "Returns a list of quotes",
+        "responses": {
+          "200": {
+            "description": "WIP"
+          }
+        }
+      }
+    },
+    "/authors": {
+      "get": {
+        "tags": [
+          "authors"
+        ],
+        "summary": "Returns the list of authors",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "The number of paginated output",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "minimum": 1,
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully returned list of authors",
+            "content": {
+              "application\\json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized Error",
+            "content": {
+              "application\\json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "error": {
+                    "code": 401,
+                    "message": "Unauthorized."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/authors/{uuid}": {
+      "get": {
+        "tags": [
+          "authors"
+        ],
+        "summary": "Returns single author data",
+        "parameters": [
+          {
+            "name": "uuid",
+            "in": "path",
+            "description": "Resource identifier",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully returned author data",
+            "content": {
+              "application\\json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200_1"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request Error",
+            "content": {
+              "application\\json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "error": {
+                    "code": 400,
+                    "message": "Invalid data supplied."
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized Error",
+            "content": {
+              "application\\json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "error": {
+                    "code": 401,
+                    "message": "Unauthorized."
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found Error",
+            "content": {
+              "application\\json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "error": {
+                    "code": 404,
+                    "message": "Resource not found."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Quote": {
+        "required": [
+          "quote_id",
+          "text"
+        ],
+        "type": "object",
+        "properties": {
+          "quote_id": {
+            "type": "string",
+            "description": "Quote uuid",
+            "format": "uuid"
+          },
+          "text": {
+            "type": "string",
+            "description": "The quote itself",
+            "example": "There is some good in this world, and it’s worth fighting for."
+          },
+          "when_said": {
+            "type": "integer",
+            "description": "The year when quote was written, or said, or published, etc.; optional",
+            "example": 1954,
+            "default": 0
+          },
+          "where_said": {
+            "type": "string",
+            "description": "The place where quote was said, or published (name of the book, country etc.)",
+            "example": "The Two Towers",
+            "default": ""
+          },
+          "author": {
+            "$ref": "#/components/schemas/AuthorBasic"
+          }
+        },
+        "description": "Quote item"
+      },
+      "AuthorBasic": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Author full name",
+            "example": "J.R.R. Tolkien"
+          },
+          "links": {
+            "$ref": "#/components/schemas/AuthorBasic_links"
+          }
+        },
+        "description": "Main data about the author"
+      },
+      "Author": {
+        "description": "Full data about the author",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/AuthorBasic"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "born": {
+                "type": "integer",
+                "description": "Year when author was born",
+                "example": 1892
+              },
+              "died": {
+                "type": "integer",
+                "description": "Year when author died (if it has happened)",
+                "nullable": true,
+                "example": 1973
+              },
+              "bio": {
+                "type": "string",
+                "description": "Brief info about the author",
+                "nullable": true,
+                "example": "An English writer, poet, philologist, and academic, best known as the author of the high fantasy works The Hobbit and The Lord of the Rings."
+              }
+            }
+          }
+        ]
+      },
+      "Links": {
+        "type": "object",
+        "properties": {
+          "first": {
+            "type": "string",
+            "description": "Link to the first page of the list",
+            "format": "url"
+          },
+          "last": {
+            "type": "string",
+            "description": "Link to the last page of the list",
+            "format": "url"
+          },
+          "prev": {
+            "type": "string",
+            "description": "Link to the previuos page of the list",
+            "format": "url",
+            "nullable": true
+          },
+          "next": {
+            "type": "string",
+            "description": "Link to the next page of the list",
+            "format": "url",
+            "nullable": true
+          }
+        },
+        "description": "Set of pagination links"
+      },
+      "Meta": {
+        "type": "object",
+        "properties": {
+          "current_page": {
+            "type": "integer",
+            "description": "The number of the current page"
+          },
+          "last_page": {
+            "type": "integer",
+            "description": "The number of the last page"
+          },
+          "per_page": {
+            "type": "integer",
+            "description": "The number of items per page"
+          },
+          "total": {
+            "type": "integer",
+            "description": "Total items count"
+          }
+        },
+        "description": "Pagination metadata"
+      },
+      "Pagination": {
+        "type": "object",
+        "properties": {
+          "links": {
+            "$ref": "#/components/schemas/Links"
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
+          }
+        },
+        "description": "Full pagination metadata and links"
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "$ref": "#/components/schemas/ErrorResponse_error"
+          }
+        }
+      },
+      "inline_response_200": {
+        "allOf": [
+          {
+            "type": "object",
+            "properties": {
+              "data": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/AuthorBasic"
+                }
+              }
+            }
+          },
+          {
+            "$ref": "#/components/schemas/Pagination"
+          }
+        ]
+      },
+      "inline_response_200_1": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/Author"
+          }
+        }
+      },
+      "AuthorBasic_links": {
+        "type": "object",
+        "properties": {
+          "self": {
+            "type": "string",
+            "description": "Detail author data",
+            "format": "url"
+          },
+          "books": {
+            "type": "string",
+            "description": "List of books of the author",
+            "format": "url"
+          },
+          "quotes": {
+            "type": "string",
+            "description": "List of quotes of the author",
+            "format": "url"
+          }
+        }
+      },
+      "ErrorResponse_error": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "responses": {
+      "BadRequest": {
+        "description": "Bad Request Error",
+        "content": {
+          "application\\json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            },
+            "example": {
+              "error": {
+                "code": 400,
+                "message": "Invalid data supplied."
+              }
+            }
+          }
+        }
+      },
+      "Unauthorized": {
+        "description": "Unauthorized Error",
+        "content": {
+          "application\\json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            },
+            "example": {
+              "error": {
+                "code": 401,
+                "message": "Unauthorized."
+              }
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "Not Found Error",
+        "content": {
+          "application\\json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            },
+            "example": {
+              "error": {
+                "code": 404,
+                "message": "Resource not found."
+              }
+            }
+          }
+        }
+      }
+    },
+    "parameters": {
+      "Pagination": {
+        "name": "page",
+        "in": "query",
+        "description": "The number of paginated output",
+        "required": false,
+        "style": "form",
+        "explode": true,
+        "schema": {
+          "minimum": 1,
+          "type": "integer"
+        }
+      },
+      "Uuid": {
+        "name": "uuid",
+        "in": "path",
+        "description": "Resource identifier",
+        "required": true,
+        "style": "simple",
+        "explode": false,
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
+      }
+    },
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "name": "X-BooQuotes-Api-Key",
+        "in": "header"
+      }
+    }
+  }
+}

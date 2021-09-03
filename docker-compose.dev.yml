@@ -22,7 +22,7 @@ services:
             - '${WEBSERVER_PORT:-8080}:80'
 
     php-fpm:
-        build: config/php-fpm/prod
+        build: config/php-fpm/dev
         working_dir: /application
         volumes:
             - '${APP_DIR}:/application'
@@ -34,3 +34,13 @@ services:
         volumes:
             - '${APP_DIR}:/application'
         command: install
+
+    swagger-ui:
+        image: 'swaggerapi/swagger-ui'
+        volumes:
+            -  '${APP_DIR}:/application'
+        ports:
+            - '8088:8080'
+        environment:
+            BASE_URL: '/api-docs'
+            SWAGGER_JSON: '/application/docs/openapi.json'
