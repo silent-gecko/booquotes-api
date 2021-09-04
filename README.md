@@ -19,8 +19,10 @@ Rename `.env.app.example` file to `.env` and set all environment variables as yo
 Open terminal in the project directory and run:
 
 ```shell
-docker-compose up
+docker-compose -f docker-compose.dev.yml up # development 
+docker-compose  up                          # production
 ```
+Development mode includes extra services: `XDedug` in code coverage mode + `Swagger-UI`
 
 ### Migrate DB tables and seed the data
 Open terminal inside the php-fpm container: 
@@ -39,3 +41,7 @@ docker exec {{php-fpm container name}} php artisan migrate:fresh --seed
 
 ## Usage
 WIP :speak_no_evil:
+
+### API Docs
+Learn API docs in dev environment at  
+[http://localhost:8088/api-docs/]() or use cloud version of [Swagger](https://swagger.io/) to read [specification file](./docs/openapi.json).
