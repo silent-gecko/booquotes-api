@@ -21,5 +21,12 @@ $router->group(['prefix' => 'api/v1'], function () use ($router) {
     $router->group(['middleware' => 'auth'], function () use ($router) {
         $router->get('/authors', ['as' => 'v1.author.index', 'uses' => 'AuthorController@index']);
         $router->get('/authors/{uuid}', ['as' => 'v1.author.show', 'uses' => 'AuthorController@show']);
+        $router->get('/authors/{uuid}/books', [
+            'as'   => 'v1.author.showBooks',
+            'uses' => 'AuthorController@showBooks'
+        ]);
+
+        $router->get('books', ['as' => 'v1.book.index', 'uses' => 'BookController@index']);
+        $router->get('books/{uuid}', ['as' => 'v1.book.show', 'uses' => 'BookController@show']);
     });
 });
