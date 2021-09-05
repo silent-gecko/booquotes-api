@@ -66,6 +66,34 @@ class Book extends Model
     }
 
     /**
+     * Get link to the book show endpoint
+     * @return string
+     */
+    public function getSelfLinkAttribute(): string
+    {
+        return route('v1.book.show', ['uuid' => $this->id]);
+    }
+
+    /**
+     * Get link to author show endpoint
+     * @return string
+     */
+    public function getAuthorLinkAttribute(): string
+    {
+        return route('v1.author.show', ['uuid' => $this->author_id]);
+    }
+
+    /**
+     * Get link to quotes list endpoint
+     * @return string
+     */
+    public function getQuotesLinkAttribute(): string
+    {
+        // TODO: create link pattern
+        return 'quotes-link';
+    }
+
+    /**
      * Set sorting index from title value
      * @param $value
      */

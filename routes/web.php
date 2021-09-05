@@ -22,7 +22,7 @@ $router->group(['prefix' => 'api/v1'], function () use ($router) {
         $router->get('/authors', ['as' => 'v1.author.index', 'uses' => 'AuthorController@index']);
         $router->get('/authors/{uuid}', ['as' => 'v1.author.show', 'uses' => 'AuthorController@show']);
         $router->get('/authors/{uuid}/books', [
-            'as'   => 'v1.author.showBooks',
+            'as'   => 'v1.author.books.show',
             'uses' => 'AuthorController@showBooks'
         ]);
 
