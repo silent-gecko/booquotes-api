@@ -38,11 +38,12 @@ class QuotesFullDataSeeder extends Seeder
                     $authorId = $author->id->toString();
                 }
                 if ($data['book_title']) {
-                    $bookId = DB::table('books')->insertGetId([
+                    $book = Book::create([
                         'title' => $data['book_title'],
                         'description' => $data['description'] ?: null,
                         'author_id' => $authorId,
                     ]);
+                    $bookId = $book->id->toString();
                 }
                 Quote::create([
                     'text' => $data['quote'],
