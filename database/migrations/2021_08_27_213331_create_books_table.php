@@ -15,6 +15,7 @@ class CreateBooksTable extends Migration
     {
         Schema::create('books', function (Blueprint $table) {
             $table->uuid('id')->primary()->default(DB::raw('uuid_generate_v4()'));
+            $table->string('sort_index', 3);
             $table->string('title');
             $table->text('description');
             $table->uuid('author_id');
