@@ -40,10 +40,8 @@ docker exec {{php-fpm container name}} php artisan migrate:fresh --seed
 ```
 
 ## Usage
-WIP :speak_no_evil:
-
 ### API Docs
 Learn API docs in dev environment at  
 [http://localhost:8088/api-docs/]() or use 
-cloud version of [Swagger](https://swagger.io/) to read [.json specification file](./docs/openapi.json) 
+your favorite instrument to read [.json specification file](./docs/openapi.json) 
 or [.yaml specification file](./docs/openapi.yaml).
