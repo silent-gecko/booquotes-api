@@ -225,7 +225,7 @@ components:
                     type: array
                     items:
                       $ref: '#/components/schemas/AuthorBasic'
-                  - $ref: '#/components/schemas/Pagination'
+              - $ref: '#/components/schemas/Pagination'
     BooksList:
       description: Successfully returned list of books
       content:
