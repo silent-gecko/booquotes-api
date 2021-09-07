@@ -50,18 +50,7 @@ paths:
         - $ref: '#/components/parameters/Pagination'
       responses:
         200:
-          description: Successfuly returned list of books
-          content:
-            application\json:
-              schema:
-                allOf:
-                  - type: object
-                    properties:
-                      data:
-                        type: array
-                        items:
-                          $ref: '#/components/schemas/BookBasic'
-                  - $ref: '#/components/schemas/Pagination'
+          $ref: '#/components/responses/BooksList'
         401:
           $ref: '#/components/responses/Unauthorized'
   /books/{uuid}:
@@ -112,18 +101,7 @@ paths:
         - $ref: '#/components/parameters/Pagination'
       responses:
         200:
-          description: Successfully returned list of authors
-          content:
-            application\json:
-              schema:
-                allOf:
-                  - type: object
-                    properties:
-                      data:
-                        type: array
-                        items:
-                          $ref: '#/components/schemas/AuthorBasic'
-                  - $ref: '#/components/schemas/Pagination'
+          $ref: '#/components/responses/AuthorsList'
         401:
           $ref: '#/components/responses/Unauthorized'
   /authors/{uuid}:
@@ -159,18 +137,7 @@ paths:
         - $ref: '#/components/parameters/Pagination'
       responses:
         200:
-          description: Successfully returned list of books
-          content:
-            application\json:
-              schema:
-                allOf:
-                  - type: object
-                    properties:
-                      data:
-                        type: array
-                        items:
-                          $ref: '#/components/schemas/BookBasic'
-                  - $ref: '#/components/schemas/Pagination'
+          $ref: '#/components/responses/BooksList'
         400:
           $ref: '#/components/responses/BadRequest'
         401:
@@ -246,6 +213,32 @@ components:
             error:
               code: 404
               message: Resource not found.
+    AuthorsList:
+      description: Successfully returned list of authors
+      content:
+        application\json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/AuthorBasic'
+                  - $ref: '#/components/schemas/Pagination'
+    BooksList:
+      description: Successfully returned list of books
+      content:
+        application\json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/BookBasic'
+              - $ref: '#/components/schemas/Pagination'
     QuotesList:
       description: Successfully returned list of quotes
       content:
