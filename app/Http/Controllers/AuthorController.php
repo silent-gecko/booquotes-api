@@ -32,18 +32,4 @@ class AuthorController extends Controller
 
         return new AuthorResource(Author::findOrFail($uuid));
     }
-
-    /**
-     * @param string $uuid
-     *
-     * @return BookCollection
-     */
-    public function showBooks(string $uuid)
-    {
-        if (!Str::isUuid($uuid)) {
-            throw new BadRequestHttpException('Invalid id supplied.');
-        }
-
-        return new BookCollection(Author::findOrFail($uuid)->books);
-    }
 }

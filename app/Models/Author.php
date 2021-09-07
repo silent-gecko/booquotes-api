@@ -83,7 +83,7 @@ class Author extends Model
      */
     public function getBooksLinkAttribute(): string
     {
-        return route('v1.author.books.show', ['uuid' => $this->id]);
+        return route('v1.author.book.index', ['uuid' => $this->id]);
     }
 
     /**
