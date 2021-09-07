@@ -29,6 +29,13 @@ class Quote extends Model
         'text', 'book_id'
     ];
 
+    /**
+     * The relationships that should always be loaded.
+     *
+     * @var array
+     */
+    protected $with = ['book:id,title', 'author:id,name'];
+
 
     /**
      * Get the book of the quote.
