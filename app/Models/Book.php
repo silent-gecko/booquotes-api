@@ -49,6 +49,13 @@ class Book extends Model
      */
     protected $perPage = 10;
 
+    /**
+     * The relationships that should always be loaded.
+     *
+     * @var array
+     */
+    protected $with = ['author:id,name'];
+
 
     /**
      * Get the author of the book.
