@@ -92,8 +92,7 @@ class Author extends Model
      */
     public function getQuotesLinkAttribute(): string
     {
-        // TODO: create link pattern
-        return 'quotes-link';
+        return route('v1.author.quote.index', ['uuid' => $this->id]);
     }
 
     /**

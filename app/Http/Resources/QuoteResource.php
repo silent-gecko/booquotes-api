@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class QuoteResource
+class QuoteResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -14,12 +14,13 @@ class QuoteResource
      *
      * @return array
      */
-    public function toArray(Request $request)
+    public function toArray($request)
     {
+        //dd($this->author());
         return [
             'text'  => $this->text,
             'book' => $this->book->title,
-            'author' => $this->author->name,
+            'author' => $this->book->author->name,
             'links' => [
                 'self'   => $this->self_link,
                 'book' => $this->book_link,
