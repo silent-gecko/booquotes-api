@@ -3,9 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Extensions\Traits\HasUuid;
 
 class Quote extends Model
 {
+    use HasFactory, HasUuid;
+
     /**
      * Indicates if the model's ID is auto-incrementing.
      *
