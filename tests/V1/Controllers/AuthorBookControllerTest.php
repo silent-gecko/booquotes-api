@@ -10,6 +10,32 @@ use Symfony\Component\HttpFoundation\Response;
 
 class AuthorBookControllerTest extends \TestCase
 {
+    public function test_show_books_returns_valid_data_format()
+    {
+        $author = Author::factory()->create();
+        $books = Book::factory()->count(3)->for($author)->create();
+        $user = User::factory()->create();
+
+        $this->actingAs($user)
+            ->json('get', route('v1.author.book.index', ['uuid' => $author->id]));
+
+        $this->assertResponseStatus(Response::HTTP_OK);
+        $this->seeJsonStructure([
+            'data' => [
+                '*' => [
+                    'title',
+                    'links' => [
+                        'self',
+                        'author',
+                        'quotes',
+                    ]
+                ]
+            ],
+            'meta',
+            'links',
+        ]);
+    }
+
     public function test_show_books_returns_error_with_invalid_id()
     {
         $user = User::factory()->create();
@@ -29,28 +55,5 @@ class AuthorBookControllerTest extends \TestCase
         $this->actingAs($user)->json('get', route('v1.author.book.index', ['uuid' => $nonExistingUuid]));
         $this->assertResponseStatus(Response::HTTP_NOT_FOUND);
         $this->seeJsonStructure(['error' => ['code', 'message']]);
-    }
-
-    public function test_show_books_returns_valid_data_format()
-    {
-        $author = Author::factory()->create();
-        $books = Book::factory()->count(3)->for($author)->create();
-        $user = User::factory()->create();
-
-        $this->actingAs($user)
-            ->json('get', route('v1.author.book.index', ['uuid' => $author->id]));
-
-        $this->seeJsonStructure([
-            'data' => [
-                '*' => [
-                    'title',
-                    'links' => [
-                        'self',
-                        'author',
-                        'quotes',
-                    ]
-                ]
-            ]
-        ]);
     }
 }
