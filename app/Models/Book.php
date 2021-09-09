@@ -97,7 +97,7 @@ class Book extends Model
      */
     public function getQuotesLinkAttribute(): string
     {
-        return route('v1.book.quote.index', ['uuid' => $this->id]);
+        return route('v1.book.quote.show', ['uuid' => $this->id]);
     }
 
     /**

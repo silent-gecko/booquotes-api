@@ -12,7 +12,7 @@ class QuotesControllerTest extends \TestCase
 {
     use DatabaseTransactions;
 
-    public function test_index_returns_valid_data()
+    public function test_index_returns_valid_response()
     {
         $user = User::factory()->create();
 
@@ -38,7 +38,7 @@ class QuotesControllerTest extends \TestCase
         ]);
     }
 
-    public function test_random_returns_valid_data()
+    public function test_random_returns_valid_response()
     {
         $user = User::factory()->create();
 
@@ -60,7 +60,7 @@ class QuotesControllerTest extends \TestCase
         ]);
     }
 
-    public function test_show_returns_valid_data_with_valid_id()
+    public function test_show_returns_valid_response_with_valid_id()
     {
         $quote = Quote::factory()->create();
         $user = User::factory()->create();
@@ -83,7 +83,7 @@ class QuotesControllerTest extends \TestCase
         ]);
     }
 
-    public function test_show_returns_error_with_invalid_id()
+    public function test_show_returns_valid_response_with_invalid_id()
     {
         $user = User::factory()->create();
 

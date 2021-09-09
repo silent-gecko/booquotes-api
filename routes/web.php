@@ -26,17 +26,17 @@ $router->group(['prefix' => 'api/v1'], function () use ($router) {
         $router->get('books/{uuid}', ['as' => 'v1.book.show', 'uses' => 'BookController@show']);
 
         $router->get('/authors/{uuid}/books', [
-            'as'   => 'v1.author.book.index',
+            'as'   => 'v1.author.book.show',
             'uses' => 'AuthorBookController@show'
         ]);
 
         $router->get('/authors/{uuid}/quotes', [
-            'as' => 'v1.author.quote.index',
+            'as' => 'v1.author.quote.show',
             'uses' => 'AuthorQuoteController@show'
         ]);
 
         $router->get('/books/{uuid}/quotes', [
-            'as' => 'v1.book.quote.index',
+            'as' => 'v1.book.quote.show',
             'uses' => 'BookQuoteController@show'
         ]);
 
