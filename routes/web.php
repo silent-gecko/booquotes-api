@@ -24,9 +24,24 @@ $router->group(['prefix' => 'api/v1'], function () use ($router) {
 
         $router->get('books', ['as' => 'v1.book.index', 'uses' => 'BookController@index']);
         $router->get('books/{uuid}', ['as' => 'v1.book.show', 'uses' => 'BookController@show']);
+
         $router->get('/authors/{uuid}/books', [
-            'as'   => 'v1.author.book.index',
+            'as'   => 'v1.author.book.show',
             'uses' => 'AuthorBookController@show'
         ]);
+
+        $router->get('/authors/{uuid}/quotes', [
+            'as' => 'v1.author.quote.show',
+            'uses' => 'AuthorQuoteController@show'
+        ]);
+
+        $router->get('/books/{uuid}/quotes', [
+            'as' => 'v1.book.quote.show',
+            'uses' => 'BookQuoteController@show'
+        ]);
+
+        $router->get('/quotes', ['as' => 'v1.quote.index', 'uses' => 'QuoteController@index']);
+        $router->get('/quotes/random', ['as' => 'v1.quote.random', 'uses' => 'QuoteController@showRandom']);
+        $router->get('/quotes/{uuid}', ['as' => 'v1.quote.show', 'uses' => 'QuoteController@show']);
     });
 });

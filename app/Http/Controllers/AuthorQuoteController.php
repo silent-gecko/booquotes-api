@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\BookCollection;
+use App\Http\Resources\QuoteCollection;
 use App\Models\Author;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
-class AuthorBookController extends Controller
+class AuthorQuoteController extends Controller
 {
     public function show(string $uuid)
     {
@@ -15,6 +15,6 @@ class AuthorBookController extends Controller
             throw new BadRequestHttpException('Invalid id supplied.');
         }
 
-        return new BookCollection(Author::findOrFail($uuid)->books()->paginate());
+        return new QuoteCollection(Author::findOrFail($uuid)->quotes()->paginate());
     }
 }

@@ -83,7 +83,7 @@ class Author extends Model
      */
     public function getBooksLinkAttribute(): string
     {
-        return route('v1.author.book.index', ['uuid' => $this->id]);
+        return route('v1.author.book.show', ['uuid' => $this->id]);
     }
 
     /**
@@ -92,8 +92,7 @@ class Author extends Model
      */
     public function getQuotesLinkAttribute(): string
     {
-        // TODO: create link pattern
-        return 'quotes-link';
+        return route('v1.author.quote.show', ['uuid' => $this->id]);
     }
 
     /**

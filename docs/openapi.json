@@ -20,9 +20,76 @@
       "get" : {
         "tags" : [ "quotes" ],
         "summary" : "Returns a list of quotes",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/Pagination"
+        } ],
         "responses" : {
           "200" : {
-            "description" : "WIP"
+            "$ref" : "#/components/responses/QuotesList"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/quotes/{uuid}" : {
+      "get" : {
+        "tags" : [ "quotes" ],
+        "summary" : "Returns single quote",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/Uuid"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Successfully returned single quote item",
+            "content" : {
+              "application\\json" : {
+                "schema" : {
+                  "type" : "object",
+                  "properties" : {
+                    "data" : {
+                      "$ref" : "#/components/schemas/Quote"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/Unauthorized"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/quotes/random" : {
+      "get" : {
+        "tags" : [ "quotes" ],
+        "summary" : "Returns one random quote",
+        "responses" : {
+          "200" : {
+            "description" : "Successfully returned single quote item",
+            "content" : {
+              "application\\json" : {
+                "schema" : {
+                  "type" : "object",
+                  "properties" : {
+                    "data" : {
+                      "$ref" : "#/components/schemas/Quote"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401" : {
+            "$ref" : "#/components/responses/Unauthorized"
           }
         }
       }
@@ -36,26 +103,7 @@
         } ],
         "responses" : {
           "200" : {
-            "description" : "Successfuly returned list of books",
-            "content" : {
-              "application\\json" : {
-                "schema" : {
-                  "allOf" : [ {
-                    "type" : "object",
-                    "properties" : {
-                      "data" : {
-                        "type" : "array",
-                        "items" : {
-                          "$ref" : "#/components/schemas/BookBasic"
-                        }
-                      }
-                    }
-                  }, {
-                    "$ref" : "#/components/schemas/Pagination"
-                  } ]
-                }
-              }
-            }
+            "$ref" : "#/components/responses/BooksList"
           },
           "401" : {
             "$ref" : "#/components/responses/Unauthorized"
@@ -98,6 +146,29 @@
         }
       }
     },
+    "/books/{uuid}/quotes" : {
+      "get" : {
+        "tags" : [ "books" ],
+        "summary" : "Returns list of all quotes from the book",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/Uuid"
+        } ],
+        "responses" : {
+          "200" : {
+            "$ref" : "#/components/responses/QuotesList"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/Unauthorized"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
     "/authors" : {
       "get" : {
         "tags" : [ "authors" ],
@@ -107,26 +178,7 @@
         } ],
         "responses" : {
           "200" : {
-            "description" : "Successfully returned list of authors",
-            "content" : {
-              "application\\json" : {
-                "schema" : {
-                  "allOf" : [ {
-                    "type" : "object",
-                    "properties" : {
-                      "data" : {
-                        "type" : "array",
-                        "items" : {
-                          "$ref" : "#/components/schemas/AuthorBasic"
-                        }
-                      }
-                    }
-                  }, {
-                    "$ref" : "#/components/schemas/Pagination"
-                  } ]
-                }
-              }
-            }
+            "$ref" : "#/components/responses/AuthorsList"
           },
           "401" : {
             "$ref" : "#/components/responses/Unauthorized"
@@ -180,26 +232,30 @@
         } ],
         "responses" : {
           "200" : {
-            "description" : "Successfully returned list of books",
-            "content" : {
-              "application\\json" : {
-                "schema" : {
-                  "allOf" : [ {
-                    "type" : "object",
-                    "properties" : {
-                      "data" : {
-                        "type" : "array",
-                        "items" : {
-                          "$ref" : "#/components/schemas/BookBasic"
-                        }
-                      }
-                    }
-                  }, {
-                    "$ref" : "#/components/schemas/Pagination"
-                  } ]
-                }
-              }
-            }
+            "$ref" : "#/components/responses/BooksList"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/Unauthorized"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/authors/{uuid}/quotes" : {
+      "get" : {
+        "tags" : [ "authors" ],
+        "summary" : "Returns list of all quotes of the author",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/Uuid"
+        } ],
+        "responses" : {
+          "200" : {
+            "$ref" : "#/components/responses/QuotesList"
           },
           "400" : {
             "$ref" : "#/components/responses/BadRequest"
@@ -291,6 +347,72 @@
             }
           }
         }
+      },
+      "AuthorsList" : {
+        "description" : "Successfully returned list of authors",
+        "content" : {
+          "application\\json" : {
+            "schema" : {
+              "allOf" : [ {
+                "type" : "object",
+                "properties" : {
+                  "data" : {
+                    "type" : "array",
+                    "items" : {
+                      "$ref" : "#/components/schemas/AuthorBasic"
+                    }
+                  }
+                }
+              }, {
+                "$ref" : "#/components/schemas/Pagination"
+              } ]
+            }
+          }
+        }
+      },
+      "BooksList" : {
+        "description" : "Successfully returned list of books",
+        "content" : {
+          "application\\json" : {
+            "schema" : {
+              "allOf" : [ {
+                "type" : "object",
+                "properties" : {
+                  "data" : {
+                    "type" : "array",
+                    "items" : {
+                      "$ref" : "#/components/schemas/BookBasic"
+                    }
+                  }
+                }
+              }, {
+                "$ref" : "#/components/schemas/Pagination"
+              } ]
+            }
+          }
+        }
+      },
+      "QuotesList" : {
+        "description" : "Successfully returned list of quotes",
+        "content" : {
+          "application\\json" : {
+            "schema" : {
+              "allOf" : [ {
+                "type" : "object",
+                "properties" : {
+                  "data" : {
+                    "type" : "array",
+                    "items" : {
+                      "$ref" : "#/components/schemas/Quote"
+                    }
+                  }
+                }
+              }, {
+                "$ref" : "#/components/schemas/Pagination"
+              } ]
+            }
+          }
+        }
       }
     },
     "schemas" : {
@@ -298,33 +420,43 @@
         "description" : "Quote item",
         "type" : "object",
         "properties" : {
-          "quote_id" : {
-            "type" : "string",
-            "format" : "uuid",
-            "description" : "Quote uuid"
-          },
           "text" : {
             "type" : "string",
             "description" : "The quote itself",
             "example" : "There is some good in this world, and it’s worth fighting for."
           },
-          "when_said" : {
-            "type" : "integer",
-            "default" : 0,
-            "example" : 1954,
-            "description" : "The year when quote was written, or said, or published, etc.; optional"
-          },
-          "where_said" : {
+          "book" : {
             "type" : "string",
-            "default" : "",
-            "example" : "The Two Towers",
-            "description" : "The place where quote was said, or published (name of the book, country etc.)"
+            "description" : "The title of the book where quote from",
+            "example" : "The Lord Of The Rings"
           },
           "author" : {
-            "$ref" : "#/components/schemas/AuthorBasic"
+            "type" : "string",
+            "description" : "The author full name of the quote",
+            "example" : "J. R. R. Tolkien"
+          },
+          "links" : {
+            "type" : "object",
+            "properties" : {
+              "self" : {
+                "type" : "string",
+                "format" : "url",
+                "description" : "Link to the quote endpoint"
+              },
+              "book" : {
+                "type" : "string",
+                "format" : "url",
+                "description" : "Link to the quote book endpoint"
+              },
+              "author" : {
+                "type" : "string",
+                "format" : "url",
+                "description" : "Link to the author endpoint"
+              }
+            }
           }
         },
-        "required" : [ "quote_id", "text" ]
+        "required" : [ "text" ]
       },
       "BookBasic" : {
         "description" : "Minimal data about the book",

@@ -3,9 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Extensions\Traits\HasUuid;
 
 class Quote extends Model
 {
+    use HasFactory, HasUuid;
+
     /**
      * Indicates if the model's ID is auto-incrementing.
      *
@@ -34,7 +38,14 @@ class Quote extends Model
      *
      * @var array
      */
-    protected $with = ['book:id,title', 'author:id,name'];
+    protected $with = ['book:id,title,author_id',];
+
+    /**
+     * The number of models to return for pagination.
+     *
+     * @var int
+     */
+    protected $perPage = 20;
 
 
     /**
@@ -43,5 +54,40 @@ class Quote extends Model
     public function book()
     {
         return $this->belongsTo(Book::class);
+    }
+
+    /**
+     * Get the author of the quote.
+     */
+    public function author()
+    {
+        return $this->book->author;
+    }
+
+    /**
+     * Get link to quote endpoint
+     * @return string
+     */
+    public function getSelfLinkAttribute()
+    {
+        return route('v1.quote.show', ['uuid' => $this->id]);
+    }
+
+    /**
+     * Get link to quote book endpoint
+     * @return string
+     */
+    public function getBookLinkAttribute()
+    {
+        return route('v1.book.show', ['uuid' => $this->book->id]);
+    }
+
+    /**
+     * Get link to quote author endpoint
+     * @return string
+     */
+    public function getAuthorLinkAttribute()
+    {
+        return route('v1.author.show', ['uuid' => $this->book->author->id]);
     }
 }
