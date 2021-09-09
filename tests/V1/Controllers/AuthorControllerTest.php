@@ -12,44 +12,54 @@ class AuthorControllerTest extends \TestCase
 {
     use DatabaseTransactions;
 
-    public function test_index_returns_valid_status()
+    public function test_index_returns_valid_response()
     {
         $user = User::factory()->create();
         $this->actingAs($user)
-            ->json('get', route('v1.author.index'))
-            ->assertResponseStatus(Response::HTTP_OK);
-    }
+            ->json('get', route('v1.author.index'));
 
-    public function test_index_returns_valid_data_format()
-    {
-        $user = User::factory()->create();
-        $this->actingAs($user)
-            ->json('get', route('v1.author.index'))
-            ->seeJsonStructure([
-                'data' => [
-                    '*' => [
-                        'name',
-                        'links' => [
-                            'self',
-                            'books',
-                            'quotes',
-                        ]
+        $this->assertResponseStatus(Response::HTTP_OK);
+        $this->seeJsonStructure([
+            'data' => [
+                '*' => [
+                    'name',
+                    'links' => [
+                        'self',
+                        'books',
+                        'quotes',
                     ]
                 ]
-            ]);
+            ],
+            'meta',
+            'links'
+        ]);
     }
 
-    public function test_show_returns_valid_status_with_valid_id()
+    public function test_show_returns_valid_response_with_valid_id()
     {
         $author = Author::factory()->create();
         $user = User::factory()->create();
 
         $this->actingAs($user)
-            ->json('get', route('v1.author.show', ['uuid' => $author->id]))
-            ->assertResponseStatus(Response::HTTP_OK);
+            ->json('get', route('v1.author.show', ['uuid' => $author->id]));
+
+        $this->assertResponseStatus(Response::HTTP_OK);
+        $this->seeJsonStructure([
+            'data' => [
+                'name',
+                'born',
+                'died',
+                'bio',
+                'links' => [
+                    'self',
+                    'books',
+                    'quotes',
+                ]
+            ]
+        ]);
     }
 
-    public function test_show_returns_error_with_invalid_id()
+    public function test_show_returns_valid_response_with_invalid_id()
     {
         $user = User::factory()->create();
 
@@ -68,27 +78,5 @@ class AuthorControllerTest extends \TestCase
         $this->actingAs($user)->json('get', route('v1.author.show', ['uuid' => $nonExistingUuid]));
         $this->assertResponseStatus(Response::HTTP_NOT_FOUND);
         $this->seeJsonStructure(['error' => ['code', 'message']]);
-    }
-
-    public function test_show_returns_valid_data_format()
-    {
-        $author = Author::factory()->create();
-        $user = User::factory()->create();
-
-        $this->actingAs($user)
-            ->json('get', route('v1.author.show', ['uuid' => $author->id]))
-            ->seeJsonStructure([
-                'data' => [
-                    'name',
-                    'born',
-                    'died',
-                    'bio',
-                    'links' => [
-                        'self',
-                        'books',
-                        'quotes',
-                    ]
-                ]
-            ]);
     }
 }
