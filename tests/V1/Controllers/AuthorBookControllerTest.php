@@ -6,10 +6,13 @@ use App\Models\Author;
 use App\Models\Book;
 use App\Models\User;
 use Illuminate\Support\Str;
+use Laravel\Lumen\Testing\DatabaseTransactions;
 use Symfony\Component\HttpFoundation\Response;
 
 class AuthorBookControllerTest extends \TestCase
 {
+    use DatabaseTransactions;
+
     public function test_show_books_returns_valid_response()
     {
         $author = Author::factory()->create();
