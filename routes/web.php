@@ -32,12 +32,12 @@ $router->group(['prefix' => 'api/v1'], function () use ($router) {
 
         $router->get('/authors/{uuid}/quotes', [
             'as' => 'v1.author.quote.index',
-            'uses' => 'AuthorQuoteController@index'
+            'uses' => 'AuthorQuoteController@show'
         ]);
 
         $router->get('/books/{uuid}/quotes', [
             'as' => 'v1.book.quote.index',
-            'uses' => 'BookQuoteController@index'
+            'uses' => 'BookQuoteController@show'
         ]);
 
         $router->get('/quotes', ['as' => 'v1.quote.index', 'uses' => 'QuoteController@index']);
