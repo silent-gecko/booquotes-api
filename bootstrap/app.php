@@ -78,6 +78,7 @@ $app->middleware([
 
  $app->routeMiddleware([
      'auth' => App\Http\Middleware\Authenticate::class,
+     'check_uuid' => App\Http\Middleware\CheckUuidMiddleware::class,
  ]);
 
 /*
