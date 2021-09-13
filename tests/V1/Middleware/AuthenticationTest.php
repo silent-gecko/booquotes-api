@@ -1,6 +1,6 @@
 <?php
 
-namespace V1;
+namespace V1\Middleware;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
