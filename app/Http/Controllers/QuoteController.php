@@ -10,6 +10,11 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class QuoteController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('check_uuid', ['only' => ['show']]);
+    }
+
     /**
      * @return QuoteCollection
      */
@@ -18,15 +23,19 @@ class QuoteController extends Controller
         return new QuoteCollection(Quote::orderBy('updated_at')->paginate());
     }
 
+    /**
+     * @param string $uuid
+     *
+     * @return QuoteResource
+     */
     public function show(string $uuid)
     {
-        if (!Str::isUuid($uuid)) {
-            throw new BadRequestHttpException('Invalid id supplied.');
-        }
-
         return new QuoteResource(Quote::findOrFail($uuid));
     }
 
+    /**
+     * @return QuoteResource
+     */
     public function showRandom()
     {
         return new QuoteResource(Quote::all()->random());

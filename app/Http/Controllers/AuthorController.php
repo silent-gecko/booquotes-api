@@ -11,6 +11,11 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class AuthorController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('check_uuid', ['only' => ['show']]);
+    }
+
     /**
      * @return AuthorCollection
      */
@@ -26,10 +31,6 @@ class AuthorController extends Controller
      */
     public function show(string $uuid)
     {
-        if (!Str::isUuid($uuid)) {
-            throw new BadRequestHttpException('Invalid id supplied.');
-        }
-
         return new AuthorResource(Author::findOrFail($uuid));
     }
 }

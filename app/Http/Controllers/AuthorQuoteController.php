@@ -9,12 +9,13 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class AuthorQuoteController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('check_uuid', ['only' => ['show']]);
+    }
+
     public function show(string $uuid)
     {
-        if (!Str::isUuid($uuid)) {
-            throw new BadRequestHttpException('Invalid id supplied.');
-        }
-
         return new QuoteCollection(Author::findOrFail($uuid)->quotes()->paginate());
     }
 }
