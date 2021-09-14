@@ -344,6 +344,10 @@ components:
         - $ref: '#/components/schemas/BookBasic'
         - type: object
           properties:
+            quotes_count:
+              type: integer
+              example: 5
+              description: The number of quotes from this book
             description:
               type: string
               example: |
@@ -381,6 +385,10 @@ components:
         - $ref: '#/components/schemas/AuthorBasic'
         - type: object
           properties:
+            quotes_count:
+              type: integer
+              example: 15
+              description: The number of quotes by this author
             born:
               type: integer
               example: 1892

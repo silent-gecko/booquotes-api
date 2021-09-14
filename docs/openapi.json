@@ -502,6 +502,11 @@
         }, {
           "type" : "object",
           "properties" : {
+            "quotes_count" : {
+              "type" : "integer",
+              "example" : 5,
+              "description" : "The number of quotes from this book"
+            },
             "description" : {
               "type" : "string",
               "example" : "The Return of the King is the third and final volume of J. R. R. Tolkien\\'s The Lord of the Rings. It was published in 1955. The story begins in the kingdom of Gondor, which is soon to be attacked by the Dark Lord Sauron.\n",
@@ -550,6 +555,11 @@
         }, {
           "type" : "object",
           "properties" : {
+            "quotes_count" : {
+              "type" : "integer",
+              "example" : 15,
+              "description" : "The number of quotes by this author"
+            },
             "born" : {
               "type" : "integer",
               "example" : 1892,

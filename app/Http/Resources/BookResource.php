@@ -19,9 +19,9 @@ class BookResource extends JsonResource
         return [
             'title'  => $this->title,
             'author' => $this->author->name,
-            'links' => [
+            'links'  => [
                 'self'   => $this->self_link,
-                'author'  => $this->author_link,
+                'author' => $this->author_link,
                 'quotes' => $this->quotes_link,
             ]
         ];
@@ -38,6 +38,7 @@ class BookResource extends JsonResource
     {
         return [
             'data' => [
+                'quotes_count' => $this->quotes->count(),
                 'description'  => $this->description,
             ]
         ];

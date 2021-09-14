@@ -38,9 +38,10 @@ class AuthorResource extends JsonResource
     {
         return [
             'data' => [
-                'born' => $this->year_of_birth,
-                'died' => $this->year_of_death,
-                'bio'  => $this->bio,
+                'quotes_count' => $this->quotes->count(),
+                'born'         => $this->year_of_birth,
+                'died'         => $this->year_of_death,
+                'bio'          => $this->bio,
             ]
         ];
     }
