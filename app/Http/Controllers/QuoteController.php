@@ -5,8 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Quote;
 use App\Http\Resources\QuoteCollection;
 use App\Http\Resources\QuoteResource;
-use Illuminate\Support\Str;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class QuoteController extends Controller
 {

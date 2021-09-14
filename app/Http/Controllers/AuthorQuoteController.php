@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\QuoteCollection;
 use App\Models\Author;
-use Illuminate\Support\Str;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class AuthorQuoteController extends Controller
 {

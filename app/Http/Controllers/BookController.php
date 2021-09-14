@@ -2,11 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Str;
 use App\Models\Book;
 use App\Http\Resources\BookResource;
 use App\Http\Resources\BookCollection;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class BookController extends Controller
 {

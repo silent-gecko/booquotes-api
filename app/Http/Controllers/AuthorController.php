@@ -5,9 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Author;
 use App\Http\Resources\AuthorResource;
 use App\Http\Resources\AuthorCollection;
-use App\Http\Resources\BookCollection;
-use Illuminate\Support\Str;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class AuthorController extends Controller
 {
