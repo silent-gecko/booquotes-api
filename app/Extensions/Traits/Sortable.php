@@ -3,6 +3,8 @@
 namespace App\Extensions\Traits;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
@@ -22,6 +24,7 @@ trait Sortable
      * @param array   $defaultParameters
      *
      * @return Builder
+     * @throws \Exception
      */
     public function scopeSorted(Builder $query, Request $request, array $defaultParameters = [])
     {
@@ -45,11 +48,17 @@ trait Sortable
      * @param Collection $queryParameters
      *
      * @return Builder
+     * @throws \Exception
      */
     private function buildSortedQuery(Builder $query, Collection $queryParameters)
     {
         $queryParameters->each(function ($direction, $column) use ($query) {
-            $query->orderBy($column, $direction);
+            if ($this->isRelated($column)) {
+                [$relationName, $column] = $this->parseRelation($query, $column);
+                $query = $this->performJoin($query, $relationName, $column);
+            }
+
+            $query->orderBy($query->qualifyColumn($column), $direction);
         });
 
         return $query;
@@ -79,6 +88,63 @@ trait Sortable
 
             return [];
         });
+    }
+
+    /**
+     * @param string $column
+     *
+     * @return bool
+     */
+    private function isRelated(string $column): bool
+    {
+        return Str::contains($column, '.');
+    }
+
+    /**
+     * @param Builder $query
+     * @param string  $column
+     *
+     * @return array
+     */
+    private function parseRelation(Builder $query, string $column): array
+    {
+        if ($this->isRelated($column)) {
+            $relationName = Str::beforeLast($column, '.');
+            $relationField = Str::afterLast($column, '.');
+
+            $relation = $query->getRelation($relationName);
+            $relatedTable = $relation->getRelated()->getTable();
+            $tableField = join('.', [$relatedTable, $relationField]);
+
+
+            return [$relationName, $tableField];
+        }
+
+        return [null, null];
+    }
+
+    /**
+     * @param Builder $query
+     * @param string  $relationName
+     * @param string  $tableColumn
+     *
+     * @return Builder
+     * @throws \Exception
+     */
+    private function performJoin(Builder $query, string $relationName, string $tableColumn): Builder
+    {
+        $relation = $query->getRelation($relationName);
+        if ($relation instanceof BelongsTo) {
+            $relatedTable = $relation->getRelated()->getTable();
+            $parentTable = $relation->getParent()->getTable();
+            $parentForeignKey = $relation->getQualifiedForeignKeyName();
+            $relatedPrimaryKey = $relation->getQualifiedOwnerKeyName();
+        } else {
+            throw new \Exception('Unexpected relation type');
+        }
+
+        return $query->select([$parentTable . '.*', $tableColumn])
+            ->join($relatedTable, $parentForeignKey, '=', $relatedPrimaryKey);
     }
 
     /**

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Book;
 use App\Http\Resources\BookResource;
 use App\Http\Resources\BookCollection;
+use Illuminate\Http\Request;
 
 class BookController extends Controller
 {
@@ -16,9 +17,9 @@ class BookController extends Controller
     /**
      * @return BookCollection
      */
-    public function index()
+    public function index(Request $request)
     {
-        return new BookCollection(Book::orderBy('sort_index')->paginate());
+        return new BookCollection(Book::sorted($request, ['sort_index' => 'asc'])->paginate());
     }
 
     /**

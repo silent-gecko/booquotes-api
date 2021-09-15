@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Extensions\Traits\HasUuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Extensions\Traits\Sortable;
 
 class Book extends Model
 {
-    use HasUuid, HasFactory;
+    use HasUuid, HasFactory, Sortable;
 
     const SORT_INDEX_LENGTH = 3;
 
@@ -43,6 +44,16 @@ class Book extends Model
     ];
 
     /**
+     * Request parameters and model attributes mapping that are available for sorting.
+     *
+     * @var string[]
+     */
+    protected $sortable = [
+        'title' => 'sort_index',
+        'author' => 'author.sort_index',
+    ];
+
+    /**
      * The number of models to return for pagination.
      *
      * @var int
@@ -54,7 +65,7 @@ class Book extends Model
      *
      * @var array
      */
-    protected $with = ['author:id,name'];
+    // protected $with = ['author:id,name'];
 
 
     /**
