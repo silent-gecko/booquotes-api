@@ -65,7 +65,7 @@ class Book extends Model
      *
      * @var array
      */
-    // protected $with = ['author:id,name'];
+    protected $with = ['author:id,name'];
 
 
     /**

@@ -19,7 +19,7 @@ class BookController extends Controller
      */
     public function index(Request $request)
     {
-        return new BookCollection(Book::sorted($request, ['sort_index' => 'asc'])->paginate());
+        return new BookCollection(Book::sorted($request, ['sort_index' => 'asc'])->paginate()->withQueryString());
     }
 
     /**
