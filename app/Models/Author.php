@@ -5,12 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Extensions\Traits\HasUuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Extensions\Traits\Sortable;
 
 class Author extends Model
 {
-    use HasUuid, HasFactory;
+    use HasUuid, HasFactory, Sortable;
 
-    const SORT_INDEX_LENGTH = 3;
+    const SORT_INDEX_LENGTH = 1;
 
     /**
      * Indicates if the model's ID is auto-incrementing.
@@ -44,6 +45,13 @@ class Author extends Model
         'year_of_birth',
         'year_of_death'
     ];
+
+    /**
+     * Request parameters and model attributes mapping that are available for sorting.
+     *
+     * @var string[]
+     */
+    protected $sortable = ['name' => 'sort_index'];
 
     /**
      * The number of models to return for pagination.

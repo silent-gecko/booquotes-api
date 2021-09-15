@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Author;
 use App\Http\Resources\AuthorResource;
 use App\Http\Resources\AuthorCollection;
+use Illuminate\Http\Request;
 
 class AuthorController extends Controller
 {
@@ -16,9 +17,9 @@ class AuthorController extends Controller
     /**
      * @return AuthorCollection
      */
-    public function index()
+    public function index(Request $request)
     {
-        return new AuthorCollection(Author::orderBy('sort_index')->paginate());
+        return new AuthorCollection(Author::sorted($request, ['sort_index' => 'asc'])->paginate()->withQueryString());
     }
 
     /**
