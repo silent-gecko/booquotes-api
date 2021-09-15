@@ -8,6 +8,10 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
+/**
+ * Add model instances sorting ability
+ * using request parameters with local dynamic scope
+ */
 trait Sortable
 {
     protected string $sortParameterName = 'sort';
@@ -15,29 +19,36 @@ trait Sortable
     /**
      * @param Builder $query
      * @param Request $request
+     * @param array   $defaultParameters
      *
      * @return Builder
      */
-    public function scopeSorted(Builder $query, Request $request)
+    public function scopeSorted(Builder $query, Request $request, array $defaultParameters = [])
     {
         if ($request->filled($this->sortParameterName)) {
-            return $this->buildSortedQuery($query, $request->input($this->sortParameterName));
+            $sortParameters = $this->parseSortParameters($request->input($this->sortParameterName));
+
+            return $this->buildSortedQuery($query, $sortParameters);
+        }
+
+        if ($defaultParameters) {
+            $parametersCollection = collect($defaultParameters);
+
+            return $this->buildSortedQuery($query, $parametersCollection);
         }
 
         return $query;
     }
 
     /**
-     * @param Builder $query
-     * @param string  $queryParameters
+     * @param Builder    $query
+     * @param Collection $queryParameters
      *
      * @return Builder
      */
-    private function buildSortedQuery(Builder $query, string $queryParameters)
+    private function buildSortedQuery(Builder $query, Collection $queryParameters)
     {
-        $parsedParameters = $this->parseSortParameters($queryParameters);
-
-        $parsedParameters->each(function ($direction, $column) use ($query) {
+        $queryParameters->each(function ($direction, $column) use ($query) {
             $query->orderBy($column, $direction);
         });
 
@@ -62,6 +73,7 @@ trait Sortable
                 if (!in_array($direction, ['acs', 'desc'])) {
                     $direction = 'asc';
                 }
+
                 return [Arr::get($model->sortable, $column) => $direction];
             }
 
