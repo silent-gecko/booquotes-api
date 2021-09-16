@@ -58,7 +58,7 @@ trait Sortable
         $queryParameters->each(function ($direction, $column) use ($query) {
             if ($this->isRelated($column)) {
                 [$relationName, $column] = $this->parseRelation($query, $column);
-                $orderByValue = $this->retrieveRelated($query, $relationName, $column);
+                [$query, $orderByValue] = $this->retrieveRelated($query, $relationName, $column);
             } else {
                 $orderByValue = $query->qualifyColumn($column);
             }
@@ -134,9 +134,9 @@ trait Sortable
      * @param string  $relationName
      * @param string  $tableColumn
      *
-     * @return Builder
+     * @return array
      */
-    private function retrieveRelated(Builder $query, string $relationName, string $tableColumn): Builder
+    private function retrieveRelated(Builder $query, string $relationName, string $tableColumn): array
     {
         $relation = $query->getRelation($relationName);
         if ($relation instanceof BelongsTo) {
@@ -145,11 +145,14 @@ trait Sortable
             $parentForeignKey = $relation->getQualifiedForeignKeyName();
             $relatedPrimaryKey = $relation->getQualifiedOwnerKeyName();
 
-            return $query->select([$parentTable . '.*', $tableColumn])
-                ->join($relatedTable, $parentForeignKey, '=', $relatedPrimaryKey);
+            /**
+             * @see \App\Providers\AppServiceProvider::boot()
+             */
+            return [$query->select([$parentTable . '.*', $tableColumn])
+                ->joinOnce($relatedTable, $parentForeignKey, '=', $relatedPrimaryKey), $tableColumn];
         }
 
-        return $this->performSubQuery($query, $relation, $tableColumn);
+        return [$query, $this->performSubQuery($query, $relation, $tableColumn)];
     }
 
     /**
