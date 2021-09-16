@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Extensions\Traits\HasUuid;
+use App\Extensions\Traits\Sortable;
 
 class Quote extends Model
 {
-    use HasFactory, HasUuid;
+    use HasFactory, HasUuid, Sortable;
 
     /**
      * Indicates if the model's ID is auto-incrementing.
@@ -31,6 +32,17 @@ class Quote extends Model
      */
     protected $fillable = [
         'text', 'book_id'
+    ];
+
+    /**
+     * Request parameters and model attributes mapping that are available for sorting.
+     *
+     * @var string[]
+     */
+    protected $sortable = [
+        'date'   => 'created_at',
+        'book'   => 'book.sort_index',
+        'author' => 'author.sort_index',
     ];
 
     /**
@@ -61,7 +73,14 @@ class Quote extends Model
      */
     public function author()
     {
-        return $this->book->author;
+        return $this->hasOneThrough(
+            Author::class,
+            Book::class,
+            'id',
+            'id',
+            'book_id',
+            'author_id'
+        );
     }
 
     /**

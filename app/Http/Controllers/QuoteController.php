@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Quote;
 use App\Http\Resources\QuoteCollection;
 use App\Http\Resources\QuoteResource;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class QuoteController extends Controller
 {
@@ -16,9 +18,9 @@ class QuoteController extends Controller
     /**
      * @return QuoteCollection
      */
-    public function index()
+    public function index(Request $request)
     {
-        return new QuoteCollection(Quote::orderBy('updated_at')->paginate());
+        return new QuoteCollection(Quote::sorted($request, ['created_at' => 'desc'])->paginate()->withQueryString());
     }
 
     /**
@@ -36,6 +38,6 @@ class QuoteController extends Controller
      */
     public function showRandom()
     {
-        return new QuoteResource(Quote::all()->random());
+        return new QuoteResource(Quote::inRandomOrder()->first());
     }
 }
