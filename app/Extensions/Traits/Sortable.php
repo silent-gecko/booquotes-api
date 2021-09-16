@@ -12,11 +12,16 @@ use Illuminate\Support\Str;
 
 /**
  * Add model instances sorting ability
- * using request parameters with local dynamic scope
+ * using request parameters, and local dynamic scope.
  */
 trait Sortable
 {
-    protected string $sortParameterName = 'sort';
+    /**
+     * The name of request parameter which contains sorting.
+     *
+     * @var string
+     */
+    private string $sortParameterName = 'sort';
 
     /**
      * @param Builder $query
@@ -24,7 +29,6 @@ trait Sortable
      * @param array   $defaultParameters
      *
      * @return Builder
-     * @throws \Exception
      */
     public function scopeSorted(Builder $query, Request $request, array $defaultParameters = [])
     {
@@ -48,17 +52,20 @@ trait Sortable
      * @param Collection $queryParameters
      *
      * @return Builder
-     * @throws \Exception
      */
-    private function buildSortedQuery(Builder $query, Collection $queryParameters)
+    private function buildSortedQuery(Builder $query, Collection $queryParameters): Builder
     {
         $queryParameters->each(function ($direction, $column) use ($query) {
             if ($this->isRelated($column)) {
                 [$relationName, $column] = $this->parseRelation($query, $column);
-                $query = $this->performJoin($query, $relationName, $column);
+                $orderByValue = $this->retrieveRelated($query, $relationName, $column);
+            } else {
+                $orderByValue = $query->qualifyColumn($column);
             }
 
-            $query->orderBy($query->qualifyColumn($column), $direction);
+            if ($orderByValue) {
+                $query->orderBy($orderByValue, $direction);
+            }
         });
 
         return $query;
@@ -71,19 +78,18 @@ trait Sortable
      */
     private function parseSortParameters(string $parameters): Collection
     {
-        $model = $this;
         $sortingCommands = Str::of($parameters)->explode(',');
 
-        return $sortingCommands->mapWithKeys(function ($rawData) use ($model) {
+        return $sortingCommands->mapWithKeys(function ($rawData) {
             $column = Str::lower(Str::before($rawData, ':'));
             $direction = Str::lower(Str::after($rawData, ':'));
 
-            if (Arr::has($model->sortable, $column)) {
+            if (Arr::has($this->sortable, $column)) {
                 if (!in_array($direction, ['acs', 'desc'])) {
                     $direction = 'asc';
                 }
 
-                return [Arr::get($model->sortable, $column) => $direction];
+                return [Arr::get($this->sortable, $column) => $direction];
             }
 
             return [];
@@ -129,9 +135,8 @@ trait Sortable
      * @param string  $tableColumn
      *
      * @return Builder
-     * @throws \Exception
      */
-    private function performJoin(Builder $query, string $relationName, string $tableColumn): Builder
+    private function retrieveRelated(Builder $query, string $relationName, string $tableColumn): Builder
     {
         $relation = $query->getRelation($relationName);
         if ($relation instanceof BelongsTo) {
@@ -139,12 +144,24 @@ trait Sortable
             $parentTable = $relation->getParent()->getTable();
             $parentForeignKey = $relation->getQualifiedForeignKeyName();
             $relatedPrimaryKey = $relation->getQualifiedOwnerKeyName();
-        } else {
-            throw new \Exception('Unexpected relation type');
+
+            return $query->select([$parentTable . '.*', $tableColumn])
+                ->join($relatedTable, $parentForeignKey, '=', $relatedPrimaryKey);
         }
 
-        return $query->select([$parentTable . '.*', $tableColumn])
-            ->join($relatedTable, $parentForeignKey, '=', $relatedPrimaryKey);
+        return $this->performSubQuery($query, $relation, $tableColumn);
+    }
+
+    /**
+     * @param Builder  $query
+     * @param Relation $relation
+     * @param string   $tableColumn
+     *
+     * @return Builder
+     */
+    private function performSubQuery(Builder $query, Relation $relation, string $tableColumn): Builder
+    {
+        return $relation->getRelationExistenceQuery($relation->getRelated()->newQuery(), $query, $tableColumn);
     }
 
     /**
