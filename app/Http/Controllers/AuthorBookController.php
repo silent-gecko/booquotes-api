@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\BookCollection;
 use App\Models\Author;
+use Illuminate\Http\Request;
 
 class AuthorBookController extends Controller
 {
@@ -12,8 +13,12 @@ class AuthorBookController extends Controller
         $this->middleware('check_uuid', ['only' => ['show']]);
     }
 
-    public function show(string $uuid)
+    public function show(Request $request, string $uuid)
     {
-        return new BookCollection(Author::findOrFail($uuid)->books()->paginate());
+        return new BookCollection(Author::findOrFail($uuid)
+            ->books()
+            ->sorted($request, ['sort_index' => 'asc'])
+            ->paginate()
+            ->withQueryString());
     }
 }

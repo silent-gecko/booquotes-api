@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\QuoteCollection;
 use App\Models\Author;
+use Illuminate\Http\Request;
 
 class AuthorQuoteController extends Controller
 {
@@ -12,8 +13,12 @@ class AuthorQuoteController extends Controller
         $this->middleware('check_uuid', ['only' => ['show']]);
     }
 
-    public function show(string $uuid)
+    public function show(Request $request, string $uuid)
     {
-        return new QuoteCollection(Author::findOrFail($uuid)->quotes()->paginate());
+        return new QuoteCollection(Author::findOrFail($uuid)
+            ->quotes()
+            ->sorted($request, ['created_at' => 'desc'])
+            ->paginate()
+            ->withQueryString());
     }
 }

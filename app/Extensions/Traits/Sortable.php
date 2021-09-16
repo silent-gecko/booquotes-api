@@ -148,7 +148,7 @@ trait Sortable
             /**
              * @see \App\Providers\AppServiceProvider::boot()
              */
-            return [$query->select([$parentTable . '.*', $tableColumn])
+            return [$query->without($relationName)->select([$parentTable . '.*', $tableColumn])
                 ->joinOnce($relatedTable, $parentForeignKey, '=', $relatedPrimaryKey), $tableColumn];
         }
 
