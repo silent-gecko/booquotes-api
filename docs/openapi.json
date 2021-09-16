@@ -22,6 +22,19 @@
         "summary" : "Returns a list of quotes",
         "parameters" : [ {
           "$ref" : "#/components/parameters/Pagination"
+        }, {
+          "in" : "query",
+          "name" : "sort",
+          "description" : "Sorting settings",
+          "style" : "form",
+          "explode" : false,
+          "allowReserved" : true,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "enum" : [ "date:desc", "date:asc", "book:desc", "book:asc", "author:desc", "author:asc" ]
+            }
+          }
         } ],
         "responses" : {
           "200" : {
@@ -100,6 +113,19 @@
         "summary" : "Returns the list of books",
         "parameters" : [ {
           "$ref" : "#/components/parameters/Pagination"
+        }, {
+          "in" : "query",
+          "name" : "sort",
+          "description" : "Sorting settings",
+          "style" : "form",
+          "explode" : false,
+          "allowReserved" : true,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "enum" : [ "title:desc", "title:asc", "author:desc", "author:asc" ]
+            }
+          }
         } ],
         "responses" : {
           "200" : {
@@ -148,10 +174,23 @@
     },
     "/books/{uuid}/quotes" : {
       "get" : {
-        "tags" : [ "books" ],
+        "tags" : [ "quotes" ],
         "summary" : "Returns list of all quotes from the book",
         "parameters" : [ {
           "$ref" : "#/components/parameters/Uuid"
+        }, {
+          "in" : "query",
+          "name" : "sort",
+          "description" : "Sorting settings",
+          "style" : "form",
+          "explode" : false,
+          "allowReserved" : true,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "enum" : [ "date:desc", "date:asc", "author:desc", "author:asc" ]
+            }
+          }
         } ],
         "responses" : {
           "200" : {
@@ -175,6 +214,19 @@
         "summary" : "Returns the list of authors",
         "parameters" : [ {
           "$ref" : "#/components/parameters/Pagination"
+        }, {
+          "in" : "query",
+          "name" : "sort",
+          "description" : "Sorting settings",
+          "style" : "form",
+          "explode" : false,
+          "allowReserved" : true,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "enum" : [ "name:desc", "name:asc" ]
+            }
+          }
         } ],
         "responses" : {
           "200" : {
@@ -223,12 +275,25 @@
     },
     "/authors/{uuid}/books" : {
       "get" : {
-        "tags" : [ "authors" ],
+        "tags" : [ "books" ],
         "summary" : "Returns list of the author books where quotes are presented",
         "parameters" : [ {
           "$ref" : "#/components/parameters/Uuid"
         }, {
           "$ref" : "#/components/parameters/Pagination"
+        }, {
+          "in" : "query",
+          "name" : "sort",
+          "description" : "Sorting settings",
+          "style" : "form",
+          "explode" : false,
+          "allowReserved" : true,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "enum" : [ "title:desc", "title:asc" ]
+            }
+          }
         } ],
         "responses" : {
           "200" : {
@@ -248,10 +313,25 @@
     },
     "/authors/{uuid}/quotes" : {
       "get" : {
-        "tags" : [ "authors" ],
+        "tags" : [ "quotes" ],
         "summary" : "Returns list of all quotes of the author",
         "parameters" : [ {
           "$ref" : "#/components/parameters/Uuid"
+        }, {
+          "$ref" : "#/components/parameters/Pagination"
+        }, {
+          "in" : "query",
+          "name" : "sort",
+          "description" : "Sorting settings",
+          "style" : "form",
+          "explode" : false,
+          "allowReserved" : true,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "enum" : [ "date:desc", "date:asc", "book:desc", "book:asc" ]
+            }
+          }
         } ],
         "responses" : {
           "200" : {
