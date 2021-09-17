@@ -51,19 +51,20 @@ class BookControllerTest extends TestCase
             ->json('get', route('v1.book.show', ['uuid' => $book->id]));
 
         $this->assertResponseStatus(Response::HTTP_OK);
-        $this->seeJsonStructure([
+        $this->seeJsonEquals([
             'data' => [
-                'id',
-                'title',
-                'author' => [
-                    'id',
-                    'name',
+                'id'           => $book->id,
+                'title'        => $book->title,
+                'author'       => [
+                    'id'   => $book->author_id,
+                    'name' => $book->author->name,
                 ],
-                'description',
-                'links' => [
-                    'self',
-                    'author',
-                    'quotes',
+                'description'  => $book->description,
+                'quotes_count' => $book->quotes->count(),
+                'links'        => [
+                    'self'   => $book->self_link,
+                    'author' => $book->author_link,
+                    'quotes' => $book->quotes_link,
                 ]
             ]
         ]);

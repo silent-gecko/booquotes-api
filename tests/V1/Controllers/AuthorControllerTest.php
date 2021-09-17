@@ -45,17 +45,18 @@ class AuthorControllerTest extends \TestCase
             ->json('get', route('v1.author.show', ['uuid' => $author->id]));
 
         $this->assertResponseStatus(Response::HTTP_OK);
-        $this->seeJsonStructure([
+        $this->seeJsonEquals([
             'data' => [
-                'id',
-                'name',
-                'born',
-                'died',
-                'bio',
+                'id' => $author->id,
+                'name' => $author->name,
+                'born' => (int) $author->year_of_birth,
+                'died' => (int) $author->year_of_death,
+                'bio' => $author->bio,
+                'quotes_count' => $author->quotes->count(),
                 'links' => [
-                    'self',
-                    'books',
-                    'quotes',
+                    'self' => $author->self_link,
+                    'books' => $author->books_link,
+                    'quotes' => $author->quotes_link,
                 ]
             ]
         ]);

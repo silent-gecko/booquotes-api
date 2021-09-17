@@ -83,22 +83,22 @@ class QuotesControllerTest extends \TestCase
             ->json('get', route('v1.quote.show', ['uuid' => $quote->id]));
 
         $this->assertResponseStatus(Response::HTTP_OK);
-        $this->seeJsonStructure([
+        $this->seeJsonEquals([
             'data' => [
-                'id',
-                'text',
+                'id'     => $quote->id,
+                'text'   => $quote->text,
                 'book'   => [
-                    'id',
-                    'title',
+                    'id'    => $quote->book_id,
+                    'title' => $quote->book->title,
                 ],
                 'author' => [
-                    'id',
-                    'name',
+                    'id'   => $quote->book->author_id,
+                    'name' => $quote->book->author->name,
                 ],
                 'links'  => [
-                    'self',
-                    'book',
-                    'author',
+                    'self'   => $quote->self_link,
+                    'book'   => $quote->book_link,
+                    'author' => $quote->author_link,
                 ]
             ]
         ]);
