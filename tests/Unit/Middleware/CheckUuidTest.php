@@ -2,44 +2,46 @@
 
 namespace Unit\Middleware;
 
-use App\Models\Author;
-use App\Models\User;
+use Illuminate\Support\Facades\Route;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Str;
+use Laravel\Lumen\Testing\DatabaseTransactions;
 
 class CheckUuidTest extends \TestCase
 {
+    use DatabaseTransactions;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        Route::get('/test/{uuid}', ['middleware' => 'check_uuid', 'as' => 'test', function() {
+            return 'test';
+        }]);
+    }
+
     public function test_return_error_on_numeric_id()
     {
-        $user = User::factory()->create();
         $numericId = 123;
 
-        $this->actingAs($user)
-            ->json('get', route('v1.author.show', ['uuid' => $numericId]));
+        $this->get(route('test', ['uuid' => $numericId]));
 
         $this->assertResponseStatus(Response::HTTP_BAD_REQUEST);
-        $this->seeJsonStructure(['error' => ['code', 'message']]);
     }
 
     public function test_return_error_on_string_id()
     {
-        $user = User::factory()->create();
         $stringId = Str::remove('-', Str::uuid());
 
-        $this->actingAs($user)
-            ->json('get', route('v1.author.show', ['uuid' => $stringId]));
+        $this->get(route('test', ['uuid' => $stringId]));
 
         $this->assertResponseStatus(Response::HTTP_BAD_REQUEST);
-        $this->seeJsonStructure(['error' => ['code', 'message']]);
     }
 
     public function test_return_data_on_valid_uuid()
     {
-        $author = Author::factory()->create();
-        $user = User::factory()->create();
+        $validId = Str::uuid();
 
-        $this->actingAs($user)
-            ->json('get', route('v1.author.show', ['uuid' => $author->id]));
+        $this->get(route('test', ['uuid' => $validId]));
 
         $this->assertResponseStatus(Response::HTTP_OK);
     }
