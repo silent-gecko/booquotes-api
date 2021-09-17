@@ -24,9 +24,13 @@ class BookControllerTest extends TestCase
         $this->seeJsonStructure([
             'data' => [
                 '*' => [
+                    'id',
                     'title',
-                    'author',
-                    'links' => [
+                    'author' => [
+                        'id',
+                        'name',
+                    ],
+                    'links'  => [
                         'self',
                         'author',
                         'quotes',
@@ -49,7 +53,12 @@ class BookControllerTest extends TestCase
         $this->assertResponseStatus(Response::HTTP_OK);
         $this->seeJsonStructure([
             'data' => [
+                'id',
                 'title',
+                'author' => [
+                    'id',
+                    'name',
+                ],
                 'description',
                 'links' => [
                     'self',

@@ -16,15 +16,21 @@ class QuoteResource extends JsonResource
      */
     public function toArray($request)
     {
-        //dd($this->author());
         return [
-            'text'  => $this->text,
-            'book' => $this->book->title,
-            'author' => $this->book->author->name,
-            'links' => [
+            'id'     => $this->id,
+            'text'   => $this->text,
+            'book'   => [
+                'id'    => $this->book_id,
+                'title' => $this->book->title,
+            ],
+            'author' => [
+                'id'   => $this->book->author_id,
+                'name' => $this->book->author->name,
+            ],
+            'links'  => [
                 'self'   => $this->self_link,
-                'book' => $this->book_link,
-                'author'  => $this->author_link,
+                'book'   => $this->book_link,
+                'author' => $this->author_link,
             ]
         ];
     }

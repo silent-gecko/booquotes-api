@@ -28,9 +28,16 @@ class AuthorQuoteControllerTest extends \TestCase
         $this->seeJsonStructure([
             'data' => [
                 '*' => [
+                    'id',
                     'text',
-                    'book',
-                    'author',
+                    'book'   => [
+                        'id',
+                        'title',
+                    ],
+                    'author' => [
+                        'id',
+                        'name',
+                    ],
                     'links' => [
                         'self',
                         'book',

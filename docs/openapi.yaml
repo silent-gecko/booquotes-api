@@ -341,18 +341,36 @@ components:
       description: Quote item
       type: object
       properties:
+        id:
+          type: string
+          format: uuid
+          description: Quote unique id
         text:
           type: string
           description: The quote itself
           example: 'There is some good in this world, and it’s worth fighting for.'
         book:
-          type: string
-          description: The title of the book where quote from
-          example: 'The Lord Of The Rings'
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+              description: Book unique id
+            title:
+              type: string
+              description: The title of the book where is quote from
+              example: 'The Lord Of The Rings'
         author:
-          type: string
-          description: The author full name of the quote
-          example: 'J. R. R. Tolkien'
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+              description: Author unique id
+            name:
+              type: string
+              description: The author full name
+              example: 'J. R. R. Tolkien'
         links:
           type: object
           properties:
@@ -374,14 +392,25 @@ components:
       description: Minimal data about the book
       type: object
       properties:
+        id:
+          type: string
+          format: uuid
+          description: Book unique id
         title:
           type: string
           example: 'The Return Of The King'
           description: Book title
         author:
-          type: string
-          example: 'J. R. R. Tolkien'
-          description: Author name
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+              description: Author unique id
+            name:
+              type: string
+              example: 'J. R. R. Tolkien'
+              description: Author name
         links:
           type: object
           properties:
@@ -419,6 +448,10 @@ components:
       description: Main data about the author
       type: object
       properties:
+        id:
+          type: string
+          format: uuid
+          description: Author unique id
         name:
           type: string
           example : 'J.R.R. Tolkien'

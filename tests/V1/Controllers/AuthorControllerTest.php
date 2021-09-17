@@ -22,6 +22,7 @@ class AuthorControllerTest extends \TestCase
         $this->seeJsonStructure([
             'data' => [
                 '*' => [
+                    'id',
                     'name',
                     'links' => [
                         'self',
@@ -46,6 +47,7 @@ class AuthorControllerTest extends \TestCase
         $this->assertResponseStatus(Response::HTTP_OK);
         $this->seeJsonStructure([
             'data' => [
+                'id',
                 'name',
                 'born',
                 'died',
