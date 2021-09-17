@@ -1,6 +1,6 @@
 <?php
 
-namespace V1;
+namespace Feature\V1;
 
 class HealthCheckTest extends \TestCase
 {

@@ -1,7 +1,7 @@
 <?php
-namespace V1\Controllers;
 
-use App\Models\Book;
+namespace Feature\V1\Controllers;
+
 use App\Models\User;
 use App\Models\Author;
 use Illuminate\Support\Str;
@@ -47,15 +47,15 @@ class AuthorControllerTest extends \TestCase
         $this->assertResponseStatus(Response::HTTP_OK);
         $this->seeJsonEquals([
             'data' => [
-                'id' => $author->id,
-                'name' => $author->name,
-                'born' => (int) $author->year_of_birth,
-                'died' => (int) $author->year_of_death,
-                'bio' => $author->bio,
+                'id'           => $author->id,
+                'name'         => $author->name,
+                'born'         => (int) $author->year_of_birth,
+                'died'         => (int) $author->year_of_death,
+                'bio'          => $author->bio,
                 'quotes_count' => $author->quotes->count(),
-                'links' => [
-                    'self' => $author->self_link,
-                    'books' => $author->books_link,
+                'links'        => [
+                    'self'   => $author->self_link,
+                    'books'  => $author->books_link,
                     'quotes' => $author->quotes_link,
                 ]
             ]

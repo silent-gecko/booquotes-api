@@ -1,6 +1,6 @@
 <?php
 
-namespace V1\Controllers;
+namespace Feature\V1\Controllers;
 
 use App\Models\Author;
 use App\Models\Book;
@@ -38,7 +38,7 @@ class AuthorQuoteControllerTest extends \TestCase
                         'id',
                         'name',
                     ],
-                    'links' => [
+                    'links'  => [
                         'self',
                         'book',
                         'author',
