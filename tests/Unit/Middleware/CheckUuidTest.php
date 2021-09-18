@@ -19,20 +19,11 @@ class CheckUuidTest extends \TestCase
         }]);
     }
 
-    public function test_return_error_on_numeric_id()
+    public function test_return_error_on_invalid_id()
     {
-        $numericId = 123;
+        $invalidId = 123;
 
-        $this->get(route('test', ['uuid' => $numericId]));
-
-        $this->assertResponseStatus(Response::HTTP_BAD_REQUEST);
-    }
-
-    public function test_return_error_on_string_id()
-    {
-        $stringId = Str::remove('-', Str::uuid());
-
-        $this->get(route('test', ['uuid' => $stringId]));
+        $this->get(route('test', ['uuid' => $invalidId]));
 
         $this->assertResponseStatus(Response::HTTP_BAD_REQUEST);
     }
