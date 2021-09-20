@@ -17,6 +17,13 @@ use Illuminate\Support\Str;
 trait Sortable
 {
     /**
+     * Request parameters and model attributes mapping that are available for sorting.
+     *
+     * @var string[]
+     */
+    protected $sortable = [];
+
+    /**
      * The name of request parameter which contains sorting.
      *
      * @var string
@@ -181,5 +188,21 @@ trait Sortable
     public function setSortParameterName(string $sortParameterName): void
     {
         $this->sortParameterName = $sortParameterName;
+    }
+
+    /**
+     * @return array
+     */
+    public function getSortable(): array
+    {
+        return $this->sortable;
+    }
+
+    /**
+     * @param array $sortable
+     */
+    public function setSortable(array $sortable): void
+    {
+        $this->sortable = $sortable;
     }
 }
