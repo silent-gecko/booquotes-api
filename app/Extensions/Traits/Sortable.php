@@ -17,13 +17,6 @@ use Illuminate\Support\Str;
 trait Sortable
 {
     /**
-     * Request parameters and model attributes mapping that are available for sorting.
-     *
-     * @var string[]
-     */
-    protected $sortable = [];
-
-    /**
      * The name of request parameter which contains sorting.
      *
      * @var string
