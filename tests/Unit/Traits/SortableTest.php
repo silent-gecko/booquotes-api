@@ -13,7 +13,7 @@ class SortableTest extends \TestCase
 {
     use DatabaseTransactions;
 
-    public function test_without_all_parameters()
+    public function test_scope_without_all_parameters()
     {
         $model = Author::factory()->create();
         $request = new Request();
@@ -23,7 +23,7 @@ class SortableTest extends \TestCase
         $this->assertNull($result->getQuery()->orders);
     }
 
-    public function test_with_default_parameters()
+    public function test_scope_with_default_parameters()
     {
         $model = Author::factory()->create();
         $request = new Request();
@@ -38,7 +38,7 @@ class SortableTest extends \TestCase
         $this->assertContainsEquals($defaultOrderTableDefinition, $result->getQuery()->orders);
     }
 
-    public function test_with_request_parameters()
+    public function test_scope_with_request_parameters()
     {
         $model = Author::factory()->create();
         $model->setSortable(['name' => 'sort_index']);
@@ -54,7 +54,10 @@ class SortableTest extends \TestCase
         $this->assertContainsEquals($expectedOrder, $result->getQuery()->orders);
     }
 
-    public function test_with_request_and_default_parameters()
+    /*
+     * Default parameters should be applied when request parameters are empty
+     */
+    public function test_scope_with_request_and_default_parameters()
     {
         $model = Author::factory()->create();
         $model->setSortable(['name' => 'sort_index']);
@@ -77,6 +80,10 @@ class SortableTest extends \TestCase
             'Query contains unexpected default parameters');
     }
 
+    /*
+     * Default sorting direction should be ascending;
+     * Incoming parameters should be filtered by model's `sorted` property values.
+     */
     public function test_sort_parameters_parsing()
     {
         $model = Author::factory()->create();
