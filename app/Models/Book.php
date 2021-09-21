@@ -6,12 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 use App\Extensions\Traits\HasUuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Extensions\Traits\Sortable;
+use Illuminate\Support\Str;
 
 class Book extends Model
 {
     use HasUuid, HasFactory, Sortable;
-
-    const SORT_INDEX_LENGTH = 3;
 
     /**
      * Indicates if the model's ID is auto-incrementing.
@@ -117,12 +116,14 @@ class Book extends Model
      */
     public function setTitleAttribute($value): void
     {
-        $modifiedTitle = trim($value);
+        $modifiedTitle = Str::title(trim($value));
         $this->attributes['title'] = $modifiedTitle;
 
-        $modifiedTitle = explode(' ', mb_strtolower($modifiedTitle));
-        $sortingLetters = substr($modifiedTitle[0] == 'the' ? $modifiedTitle[1] : $modifiedTitle[0], 0,
-            self::SORT_INDEX_LENGTH);
-        $this->attributes['sort_index'] = $sortingLetters;
+        if (stripos($modifiedTitle, 'The ') === 0) {
+            $modifiedTitle = Str::replaceFirst('The ', '', $modifiedTitle);
+        }
+        $sortingValue = Str::lower(Str::remove(' ', $modifiedTitle));
+
+        $this->attributes['sort_index'] = $sortingValue;
     }
 }

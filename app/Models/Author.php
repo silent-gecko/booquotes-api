@@ -6,12 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 use App\Extensions\Traits\HasUuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Extensions\Traits\Sortable;
+use Illuminate\Support\Str;
 
 class Author extends Model
 {
     use HasUuid, HasFactory, Sortable;
-
-    const SORT_INDEX_LENGTH = 1;
 
     /**
      * Indicates if the model's ID is auto-incrementing.
@@ -113,8 +112,6 @@ class Author extends Model
     public function setNameAttribute($value): void
     {
         $this->attributes['name'] = trim($value);
-        $this->attributes['sort_index'] = mb_strtolower(
-            substr($value, strrpos($value, ' ') + 1, self::SORT_INDEX_LENGTH)
-        );
+        $this->attributes['sort_index'] = Str::lower(Str::afterLast($value, ''));
     }
 }
