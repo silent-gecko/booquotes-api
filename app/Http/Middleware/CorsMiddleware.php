@@ -32,6 +32,8 @@ class CorsMiddleware
             return response('', Response::HTTP_NO_CONTENT, $headers);
         }
 
-        return $next($request)->withHeaders($headers);
+        $response = $next($request);
+
+        return $response->withHeaders($headers);
     }
 }
