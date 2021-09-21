@@ -57,6 +57,22 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         404:
           $ref: '#/components/responses/NotFound'
+  /quotes/{uuid}/download:
+    get:
+      deprecated: true
+      tags:
+        - quotes
+      summary: Returns an image with formatted quote data on it
+      parameters:
+        - $ref: '#/components/parameters/Uuid'
+      responses:
+        200:
+          description: Quote image in PNG format
+          content:
+            image\png:
+              schema:
+                type: string
+                format: base64
   /quotes/random:
     get:
       tags:
@@ -168,6 +184,7 @@ paths:
         401:
           $ref: '#/components/responses/Unauthorized'
     post:
+      deprecated: true
       tags:
         - authors
       summary: Adds new author to the collection
@@ -210,6 +227,7 @@ paths:
         404:
           $ref: '#/components/responses/NotFound'
     patch:
+      deprecated: true
       tags:
         - authors
       summary: Update author data
@@ -229,6 +247,7 @@ paths:
         404:
           $ref: '#/components/responses/NotFound'
     delete:
+      deprecated: true
       tags:
         - authors
       summary: Delete author data
