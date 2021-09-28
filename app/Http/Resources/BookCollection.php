@@ -2,10 +2,13 @@
 
 namespace App\Http\Resources;
 
-use App\Extensions\Resources\CustomResourceCollection;
+use Illuminate\Http\Resources\Json\ResourceCollection;
+use App\Extensions\Traits\HasCustomCollectionMeta;
 
-class BookCollection extends CustomResourceCollection
+class BookCollection extends ResourceCollection
 {
+    use HasCustomCollectionMeta;
+
     /**
      * Transform the resource collection into an array.
      *
