@@ -17,6 +17,15 @@ class HasUuidTest extends \TestCase
         $this->assertNotEmpty($model->getKeyName());
     }
 
+    public function test_uuid_is_present_on_create()
+    {
+        $uuid = Str::uuid()->toString();
+
+        User::factory(['id' => $uuid])->create();
+
+        $this->seeInDatabase('users', ['id' => $uuid]);
+    }
+
     public function test_uuid_is_set_when_invalid()
     {
         $model = User::factory(['id' => 123])->create();
