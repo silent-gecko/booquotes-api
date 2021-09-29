@@ -1,7 +1,7 @@
 {
   "openapi" : "3.0.0",
   "info" : {
-    "version" : "1.0.0",
+    "version" : "1.1.0",
     "title" : "BooQuotes API",
     "description" : "This API allows to retrieve literary quotes and related info from the data collection"
   },
@@ -11,9 +11,6 @@
   }, {
     "description" : "Local development server",
     "url" : "http://localhost:8080/api/v1"
-  } ],
-  "security" : [ {
-    "ApiKeyAuth" : [ ]
   } ],
   "paths" : {
     "/quotes" : {
@@ -81,6 +78,29 @@
         }
       }
     },
+    "/quotes/{uuid}/download" : {
+      "get" : {
+        "deprecated" : true,
+        "tags" : [ "quotes" ],
+        "summary" : "Returns an image with formatted quote data on it",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/Uuid"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Quote image in PNG format",
+            "content" : {
+              "image\\png" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "base64"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/quotes/random" : {
       "get" : {
         "tags" : [ "quotes" ],
@@ -103,6 +123,80 @@
           },
           "401" : {
             "$ref" : "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/books/{uuid}/quotes" : {
+      "get" : {
+        "tags" : [ "quotes" ],
+        "summary" : "Returns list of all quotes from the book",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/Uuid"
+        }, {
+          "in" : "query",
+          "name" : "sort",
+          "description" : "Sorting settings",
+          "style" : "form",
+          "explode" : false,
+          "allowReserved" : true,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "enum" : [ "date:desc", "date:asc", "author:desc", "author:asc" ]
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "$ref" : "#/components/responses/QuotesList"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/Unauthorized"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/authors/{uuid}/quotes" : {
+      "get" : {
+        "tags" : [ "quotes" ],
+        "summary" : "Returns list of all quotes of the author",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/Uuid"
+        }, {
+          "$ref" : "#/components/parameters/Pagination"
+        }, {
+          "in" : "query",
+          "name" : "sort",
+          "description" : "Sorting settings",
+          "style" : "form",
+          "explode" : false,
+          "allowReserved" : true,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "enum" : [ "date:desc", "date:asc", "book:desc", "book:asc" ]
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "$ref" : "#/components/responses/QuotesList"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/Unauthorized"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
           }
         }
       }
@@ -172,12 +266,14 @@
         }
       }
     },
-    "/books/{uuid}/quotes" : {
+    "/authors/{uuid}/books" : {
       "get" : {
-        "tags" : [ "quotes" ],
-        "summary" : "Returns list of all quotes from the book",
+        "tags" : [ "books" ],
+        "summary" : "Returns list of the author books",
         "parameters" : [ {
           "$ref" : "#/components/parameters/Uuid"
+        }, {
+          "$ref" : "#/components/parameters/Pagination"
         }, {
           "in" : "query",
           "name" : "sort",
@@ -188,13 +284,13 @@
           "schema" : {
             "type" : "array",
             "items" : {
-              "enum" : [ "date:desc", "date:asc", "author:desc", "author:asc" ]
+              "enum" : [ "title:desc", "title:asc" ]
             }
           }
         } ],
         "responses" : {
           "200" : {
-            "$ref" : "#/components/responses/QuotesList"
+            "$ref" : "#/components/responses/BooksList"
           },
           "400" : {
             "$ref" : "#/components/responses/BadRequest"
@@ -236,15 +332,43 @@
             "$ref" : "#/components/responses/Unauthorized"
           }
         }
+      },
+      "post" : {
+        "security" : [ {
+          "ApiKeyAuth" : [ ]
+        } ],
+        "tags" : [ "authors" ],
+        "summary" : "Adds new author to the collection",
+        "requestBody" : {
+          "required" : true,
+          "content" : {
+            "application\\json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Author"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "201" : {
+            "$ref" : "#/components/responses/Created"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/Unauthorized"
+          }
+        }
       }
     },
     "/authors/{uuid}" : {
+      "parameters" : [ {
+        "$ref" : "#/components/parameters/Uuid"
+      } ],
       "get" : {
         "tags" : [ "authors" ],
         "summary" : "Returns single author data",
-        "parameters" : [ {
-          "$ref" : "#/components/parameters/Uuid"
-        } ],
         "responses" : {
           "200" : {
             "description" : "Successfully returned author data",
@@ -254,7 +378,11 @@
                   "type" : "object",
                   "properties" : {
                     "data" : {
-                      "$ref" : "#/components/schemas/Author"
+                      "allOf" : [ {
+                        "$ref" : "#/components/schemas/Author"
+                      }, {
+                        "$ref" : "#/components/schemas/AuthorMeta"
+                      } ]
                     }
                   }
                 }
@@ -271,33 +399,24 @@
             "$ref" : "#/components/responses/NotFound"
           }
         }
-      }
-    },
-    "/authors/{uuid}/books" : {
-      "get" : {
-        "tags" : [ "books" ],
-        "summary" : "Returns list of the author books where quotes are presented",
-        "parameters" : [ {
-          "$ref" : "#/components/parameters/Uuid"
-        }, {
-          "$ref" : "#/components/parameters/Pagination"
-        }, {
-          "in" : "query",
-          "name" : "sort",
-          "description" : "Sorting settings",
-          "style" : "form",
-          "explode" : false,
-          "allowReserved" : true,
-          "schema" : {
-            "type" : "array",
-            "items" : {
-              "enum" : [ "title:desc", "title:asc" ]
+      },
+      "patch" : {
+        "deprecated" : true,
+        "tags" : [ "authors" ],
+        "summary" : "Update author data",
+        "requestBody" : {
+          "required" : true,
+          "content" : {
+            "application\\json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/Author"
+              }
             }
           }
-        } ],
+        },
         "responses" : {
-          "200" : {
-            "$ref" : "#/components/responses/BooksList"
+          "204" : {
+            "$ref" : "#/components/responses/NoContent"
           },
           "400" : {
             "$ref" : "#/components/responses/BadRequest"
@@ -309,33 +428,15 @@
             "$ref" : "#/components/responses/NotFound"
           }
         }
-      }
-    },
-    "/authors/{uuid}/quotes" : {
-      "get" : {
-        "tags" : [ "quotes" ],
-        "summary" : "Returns list of all quotes of the author",
-        "parameters" : [ {
-          "$ref" : "#/components/parameters/Uuid"
-        }, {
-          "$ref" : "#/components/parameters/Pagination"
-        }, {
-          "in" : "query",
-          "name" : "sort",
-          "description" : "Sorting settings",
-          "style" : "form",
-          "explode" : false,
-          "allowReserved" : true,
-          "schema" : {
-            "type" : "array",
-            "items" : {
-              "enum" : [ "date:desc", "date:asc", "book:desc", "book:asc" ]
-            }
-          }
-        } ],
+      },
+      "delete" : {
+        "deprecated" : true,
+        "tags" : [ "authors" ],
+        "summary" : "Delete author data",
+        "description" : "If author has related books, deletion won't be possible",
         "responses" : {
-          "200" : {
-            "$ref" : "#/components/responses/QuotesList"
+          "204" : {
+            "$ref" : "#/components/responses/NoContent"
           },
           "400" : {
             "$ref" : "#/components/responses/BadRequest"
@@ -428,6 +529,31 @@
           }
         }
       },
+      "Created" : {
+        "description" : "Response when resource element is successfully created",
+        "content" : {
+          "application\\json" : {
+            "schema" : {
+              "type" : "object",
+              "properties" : {
+                "data" : {
+                  "type" : "object",
+                  "properties" : {
+                    "id" : {
+                      "type" : "string",
+                      "format" : "uuid"
+                    }
+                  },
+                  "required" : [ "id" ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "NoContent" : {
+        "description" : "Action completed successfully"
+      },
       "AuthorsList" : {
         "description" : "Successfully returned list of authors",
         "content" : {
@@ -439,7 +565,11 @@
                   "data" : {
                     "type" : "array",
                     "items" : {
-                      "$ref" : "#/components/schemas/AuthorBasic"
+                      "allOf" : [ {
+                        "$ref" : "#/components/schemas/AuthorBasic"
+                      }, {
+                        "$ref" : "#/components/schemas/AuthorMeta"
+                      } ]
                     }
                   }
                 }
@@ -640,15 +770,54 @@
         "description" : "Main data about the author",
         "type" : "object",
         "properties" : {
+          "name" : {
+            "type" : "string",
+            "example" : "J.R.R. Tolkien",
+            "description" : "Author full name"
+          }
+        },
+        "required" : [ "name" ]
+      },
+      "Author" : {
+        "description" : "Full data about the author",
+        "allOf" : [ {
+          "$ref" : "#/components/schemas/AuthorBasic"
+        }, {
+          "type" : "object",
+          "properties" : {
+            "born" : {
+              "type" : "integer",
+              "example" : 1892,
+              "description" : "Year when author was born"
+            },
+            "died" : {
+              "type" : "integer",
+              "nullable" : true,
+              "example" : 1973,
+              "description" : "Year when author died (if it has happened)"
+            },
+            "bio" : {
+              "type" : "string",
+              "nullable" : true,
+              "example" : "An English writer, poet, philologist, and academic, best known as the author of the high fantasy works The Hobbit and The Lord of the Rings.",
+              "description" : "Brief info about the author"
+            }
+          }
+        } ]
+      },
+      "AuthorMeta" : {
+        "description" : "Author metadata",
+        "type" : "object",
+        "properties" : {
           "id" : {
             "type" : "string",
             "format" : "uuid",
             "description" : "Author unique id"
           },
-          "name" : {
-            "type" : "string",
-            "example" : "J.R.R. Tolkien",
-            "description" : "Author full name"
+          "quotes_count" : {
+            "type" : "integer",
+            "example" : 15,
+            "description" : "The number of quotes by this author"
           },
           "links" : {
             "type" : "object",
@@ -670,40 +839,7 @@
               }
             }
           }
-        },
-        "required" : [ "name" ]
-      },
-      "Author" : {
-        "description" : "Full data about the author",
-        "allOf" : [ {
-          "$ref" : "#/components/schemas/AuthorBasic"
-        }, {
-          "type" : "object",
-          "properties" : {
-            "quotes_count" : {
-              "type" : "integer",
-              "example" : 15,
-              "description" : "The number of quotes by this author"
-            },
-            "born" : {
-              "type" : "integer",
-              "example" : 1892,
-              "description" : "Year when author was born"
-            },
-            "died" : {
-              "type" : "integer",
-              "nullable" : true,
-              "example" : 1973,
-              "description" : "Year when author died (if it has happened)"
-            },
-            "bio" : {
-              "type" : "string",
-              "nullable" : true,
-              "example" : "An English writer, poet, philologist, and academic, best known as the author of the high fantasy works The Hobbit and The Lord of the Rings.",
-              "description" : "Brief info about the author"
-            }
-          }
-        } ]
+        }
       },
       "Links" : {
         "description" : "Set of pagination links",

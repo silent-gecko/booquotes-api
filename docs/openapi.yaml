@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: 1.0.0
+  version: 1.1.0
   title: BooQuotes API
   description: This API allows to retrieve literary quotes and related info from the data collection
 servers:
@@ -9,8 +9,6 @@ servers:
     url: https://virtserver.swaggerhub.com/silent-gecko/Quotes/1.0.0
   - description: Local development server
     url: http://localhost:8080/api/v1
-security:
-  - ApiKeyAuth: []
 paths:
   /quotes:
     get:
@@ -28,7 +26,7 @@ paths:
           schema:
             type: array
             items:
-              enum: [date:desc,date:asc,book:desc,book:asc,author:desc,author:asc]
+              enum: ['date:desc','date:asc','book:desc','book:asc','author:desc','author:asc']
       responses:
         200:
           $ref: '#/components/responses/QuotesList'
@@ -90,6 +88,59 @@ paths:
                     $ref: '#/components/schemas/Quote'
         401:
           $ref: '#/components/responses/Unauthorized'
+  /books/{uuid}/quotes:
+    get:
+      tags:
+        - quotes
+      summary: Returns list of all quotes from the book
+      parameters:
+        - $ref: '#/components/parameters/Uuid'
+        - in: query
+          name: sort
+          description: Sorting settings
+          style: form
+          explode: false
+          allowReserved: true
+          schema:
+            type: array
+            items:
+              enum: [ 'date:desc','date:asc','author:desc','author:asc' ]
+      responses:
+        200:
+          $ref: '#/components/responses/QuotesList'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+  /authors/{uuid}/quotes:
+    get:
+      tags:
+        - quotes
+      summary: Returns list of all quotes of the author
+      parameters:
+        - $ref: '#/components/parameters/Uuid'
+        - $ref: '#/components/parameters/Pagination'
+        - in: query
+          name: sort
+          description: Sorting settings
+          style: form
+          explode: false
+          allowReserved: true
+          schema:
+            type: array
+            items:
+              enum: [ 'date:desc','date:asc','book:desc','book:asc' ]
+      responses:
+        200:
+          $ref: '#/components/responses/QuotesList'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
   /books:
     get:
       tags:
@@ -106,7 +157,7 @@ paths:
           schema:
             type: array
             items:
-              enum: [ title:desc,title:asc,author:desc,author:asc ]
+              enum: [ 'title:desc','title:asc','author:desc','author:asc' ]
       responses:
         200:
           $ref: '#/components/responses/BooksList'
@@ -135,13 +186,14 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         404:
           $ref: '#/components/responses/NotFound'
-  /books/{uuid}/quotes:
+  /authors/{uuid}/books:
     get:
       tags:
-        - quotes
-      summary: Returns list of all quotes from the book
+        - books
+      summary: Returns list of the author books
       parameters:
         - $ref: '#/components/parameters/Uuid'
+        - $ref: '#/components/parameters/Pagination'
         - in: query
           name: sort
           description: Sorting settings
@@ -151,10 +203,10 @@ paths:
           schema:
             type: array
             items:
-              enum: [ date:desc,date:asc,author:desc,author:asc ]
+              enum: [ 'title:desc','title:asc' ]
       responses:
         200:
-          $ref: '#/components/responses/QuotesList'
+          $ref: '#/components/responses/BooksList'
         400:
           $ref: '#/components/responses/BadRequest'
         401:
@@ -177,14 +229,15 @@ paths:
           schema:
             type: array
             items:
-              enum: [ name:desc,name:asc ]
+              enum: [ 'name:desc','name:asc' ]
       responses:
         200:
           $ref: '#/components/responses/AuthorsList'
         401:
           $ref: '#/components/responses/Unauthorized'
     post:
-      deprecated: true
+      security:
+        - ApiKeyAuth: []
       tags:
         - authors
       summary: Adds new author to the collection
@@ -261,60 +314,6 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         404:
           $ref: '#/components/responses/NotFound'
-  /authors/{uuid}/books:
-    get:
-      tags:
-        - books
-      summary: Returns list of the author books
-      parameters:
-        - $ref: '#/components/parameters/Uuid'
-        - $ref: '#/components/parameters/Pagination'
-        - in: query
-          name: sort
-          description: Sorting settings
-          style: form
-          explode: false
-          allowReserved: true
-          schema:
-            type: array
-            items:
-              enum: [ title:desc,title:asc ]
-      responses:
-        200:
-          $ref: '#/components/responses/BooksList'
-        400:
-          $ref: '#/components/responses/BadRequest'
-        401:
-          $ref: '#/components/responses/Unauthorized'
-        404:
-          $ref: '#/components/responses/NotFound'
-  /authors/{uuid}/quotes:
-    get:
-      tags:
-        - quotes
-      summary: Returns list of all quotes of the author
-      parameters:
-        - $ref: '#/components/parameters/Uuid'
-        - $ref: '#/components/parameters/Pagination'
-        - in: query
-          name: sort
-          description: Sorting settings
-          style: form
-          explode: false
-          allowReserved: true
-          schema:
-            type: array
-            items:
-              enum: [ date:desc,date:asc,book:desc,book:asc ]
-      responses:
-        200:
-          $ref: '#/components/responses/QuotesList'
-        400:
-          $ref: '#/components/responses/BadRequest'
-        401:
-          $ref: '#/components/responses/Unauthorized'
-        404:
-          $ref: '#/components/responses/NotFound'
 components:
   securitySchemes:
     ApiKeyAuth:
@@ -381,7 +380,8 @@ components:
                   id:
                     type: string
                     format: uuid
-                required: id
+                required:
+                  - id
     NoContent:
       description: Action completed successfully
     AuthorsList:
