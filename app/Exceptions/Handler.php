@@ -61,7 +61,7 @@ class Handler extends ExceptionHandler
         }
 
         if ($exception instanceof ValidationException) {
-            return response()->jsonError(Response::HTTP_BAD_REQUEST, $exception->errors());
+            return response()->jsonError(Response::HTTP_UNPROCESSABLE_ENTITY, $exception->errors());
         }
 
         return parent::render($request, $exception);
