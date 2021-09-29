@@ -17,16 +17,14 @@ class StoreAuthorRequest extends FormRequest
         ];
     }
 
-    public function validated(): array
+    public function transform(): array
     {
-        $data = parent::validated();
-        $transformed = [
+        $data = $this->validated();
+        return [
             'name'          => $data['name'] ?? null,
             'year_of_birth' => $data['born'] ?? null,
             'year_of_death' => $data['died'] ?? null,
             'bio'           => $data['bio'] ?? null,
         ];
-
-        return $transformed;
     }
 }

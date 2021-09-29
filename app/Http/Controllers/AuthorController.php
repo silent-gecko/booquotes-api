@@ -36,7 +36,7 @@ class AuthorController extends Controller
 
     public function store(StoreAuthorRequest $request)
     {
-        $validated = $request->validated();
+        $validated = $request->transform();
         $author = Author::create($validated);
 
         return response()->jsonCreated($author->id);
