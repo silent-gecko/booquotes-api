@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Http\Response;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Lumen\Http\ResponseFactory;
 
@@ -32,6 +33,15 @@ class ResponseServiceProvider extends ServiceProvider
                 ]
             ];
             return $factory->json($responseFormat, $code);
+        });
+
+        $factory->macro('jsonCreated', function ($entityId) use ($factory) {
+            $responseFormat = [
+                'data' => [
+                    'id' => $entityId,
+                ]
+            ];
+            return $factory->json($responseFormat, Response::HTTP_CREATED);
         });
 
         $factory->macro('jsonHealthCheck', function () use ($factory) {
