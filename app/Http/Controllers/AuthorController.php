@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreAuthorRequest;
 use App\Models\Author;
 use App\Http\Resources\AuthorResource;
 use App\Http\Resources\AuthorCollection;
+use App\Rules\Year;
 use Illuminate\Http\Request;
 
 class AuthorController extends Controller
@@ -30,5 +32,13 @@ class AuthorController extends Controller
     public function show(string $uuid)
     {
         return new AuthorResource(Author::findOrFail($uuid));
+    }
+
+    public function store(StoreAuthorRequest $request)
+    {
+        $validated = $request->validated();
+        $author = Author::create($validated);
+
+        return response()->jsonCreated($author->id);
     }
 }
