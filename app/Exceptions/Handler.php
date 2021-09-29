@@ -60,6 +60,10 @@ class Handler extends ExceptionHandler
             return response()->jsonError(Response::HTTP_NOT_FOUND, 'Resource not found.');
         }
 
+        if ($exception instanceof ValidationException) {
+            return response()->jsonError(Response::HTTP_BAD_REQUEST, $exception->errors());
+        }
+
         return parent::render($request, $exception);
     }
 }
