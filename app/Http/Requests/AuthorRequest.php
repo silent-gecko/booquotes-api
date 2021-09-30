@@ -11,7 +11,7 @@ class AuthorRequest extends RequestAbstract
     {
         if ($this->isMethod('POST')) {
             return [
-                'name' => ['required', 'unique:authors,name'],
+                'name' => ['required'],
                 'born' => ['required', new Year()],
                 'died' => ['nullable', new Year(), 'gte:born'],
                 'bio'  => ['nullable'],
@@ -23,8 +23,9 @@ class AuthorRequest extends RequestAbstract
 
     protected function withValidator($validator): void
     {
-        $validator->sometimes('name', 'starts_with:old', function ($input) {
-            return $input->born <= 1920;
+        $rule = 'unique:authors,name,NULL,NULL,year_of_birth,' . $this->input('born');
+        $validator->sometimes('name', $rule, function ($input) {
+            return $input->born;
         });
     }
 
