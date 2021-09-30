@@ -3,6 +3,7 @@
 namespace App\Rules;
 
 use Illuminate\Contracts\Validation\Rule;
+use Illuminate\Support\Carbon;
 
 class Year implements Rule
 {
@@ -12,7 +13,7 @@ class Year implements Rule
      */
     public function passes($attribute, $value)
     {
-        return is_numeric($value) && $value >= 0 && $value <= 9999;
+        return is_numeric($value) && $value >= 0 && $value <= Carbon::now()->year;
     }
 
     /**
@@ -20,6 +21,6 @@ class Year implements Rule
      */
     public function message()
     {
-        return 'The :attribute must be a year.';
+        return 'The :attribute must be non-future year.';
     }
 }
