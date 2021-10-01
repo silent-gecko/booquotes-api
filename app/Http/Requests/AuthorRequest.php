@@ -7,20 +7,28 @@ use Pearl\RequestValidate\RequestAbstract;
 
 class AuthorRequest extends RequestAbstract
 {
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array
+     */
     public function rules(): array
     {
         if ($this->isMethod('POST')) {
             return [
-                'name' => ['required'],
+                'name' => ['required', 'string', 'max:100'],
                 'born' => ['required', new Year()],
                 'died' => ['nullable', new Year(), 'gte:born'],
-                'bio'  => ['nullable'],
+                'bio'  => ['nullable', 'string'],
             ];
         }
 
         return [];
     }
 
+    /**
+     * @param $validator
+     */
     protected function withValidator($validator): void
     {
         $rule = 'unique:authors,name,NULL,NULL,year_of_birth,' . $this->input('born');
@@ -29,6 +37,10 @@ class AuthorRequest extends RequestAbstract
         });
     }
 
+    /**
+     * Transform request data after validation
+     * @return array
+     */
     public function transformValidated(): array
     {
         $data = $this->validated();

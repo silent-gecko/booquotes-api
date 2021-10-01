@@ -46,6 +46,6 @@ $router->group(['prefix' => 'api/v1'], function () use ($router) {
     });
 
     $router->group(['middleware' => 'auth'], function() use ($router) {
-        $router->post('/authors', ['as' => 'v1.author.create', 'uses' => 'AuthorController@store']);
+        $router->post('/authors', ['as' => 'v1.author.store', 'uses' => 'AuthorController@store']);
     });
 });
