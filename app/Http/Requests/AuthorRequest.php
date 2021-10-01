@@ -18,7 +18,7 @@ class AuthorRequest extends RequestAbstract
             return [
                 'name' => ['required', 'string', 'max:100'],
                 'born' => ['required', new Year()],
-                'died' => ['nullable', new Year(), 'gte:born'],
+                'died' => ['nullable', new Year(), 'gt:born'],
                 'bio'  => ['nullable', 'string'],
             ];
         }
