@@ -29,9 +29,9 @@ class AuthorRequest extends RequestAbstract
     /**
      * @param $validator
      */
-    protected function withValidator($validator): void
+    public function withValidator($validator): void
     {
-        $rule = 'unique:authors,name,NULL,NULL,year_of_birth,' . $this->input('born');
+        $rule = 'unique:authors,name,'.$this->input('id').',id,year_of_birth,' . $this->input('born');
         $validator->sometimes('name', $rule, function ($input) {
             return $input->born;
         });

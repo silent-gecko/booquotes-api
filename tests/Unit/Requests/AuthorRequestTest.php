@@ -3,8 +3,11 @@
 namespace Unit\Requests;
 
 use App\Http\Requests\AuthorRequest;
+use Illuminate\Validation\DatabasePresenceVerifier;
+use Illuminate\Validation\ValidationException;
 use Faker\Factory;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Factory as ValidatorFactory;
 
 class AuthorRequestTest extends \TestCase
 {
@@ -13,11 +16,16 @@ class AuthorRequestTest extends \TestCase
      */
     public function test_post_validation_rules($shouldPass, $payload, $message)
     {
-        $request = new AuthorRequest();
+        $request = new AuthorRequest([], $payload);
+        $request->setContainer($this->app);
         $request->setMethod('POST');
-        $validator = Validator::make($payload, $request->rules());
 
-        $validationResult = $validator->passes();
+        $mock = \Mockery::mock(DatabasePresenceVerifier::class);
+        $mock->shouldReceive('setConnection');
+        $mock->shouldReceive('getCount')->andReturn(0);
+        Validator::setPresenceVerifier($mock);
+
+        $validationResult = $this->validate($request);
 
         $this->assertEquals($shouldPass, $validationResult, $message);
     }
@@ -118,5 +126,21 @@ class AuthorRequestTest extends \TestCase
                 'message' => 'Validation passes when bio is numeric.',
             ],
         ];
+    }
+
+    /**
+     * @param AuthorRequest $request
+     *
+     * @return bool
+     */
+    protected function validate(AuthorRequest $request): bool
+    {
+        try {
+            $request->validated();
+        } catch (ValidationException $e) {
+            return false;
+        }
+
+        return true;
     }
 }
