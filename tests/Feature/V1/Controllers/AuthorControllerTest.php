@@ -107,4 +107,26 @@ class AuthorControllerTest extends \TestCase
         $this->seeJsonStructure(['data' => ['id']]);
         $this->seeInDatabase('authors', $payload);
     }
+
+    public function test_store_returns_error_with_duplicate_data()
+    {
+        Author::factory(['name' => 'Some Guy', 'year_of_birth' => 1700])->create();
+
+        $this->actingAs($this->user)
+            ->json('post', route('v1.author.store'), ['name' => 'Some Guy', 'born' => 1700]);
+
+        $this->assertResponseStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $this->seeJsonStructure(['error' => ['code', 'message']]);
+    }
+
+    public function test_store_returns_valid_response_without_duplicated_data()
+    {
+        Author::factory(['name' => 'Some Guy', 'year_of_birth' => 1700])->create();
+
+        $this->actingAs($this->user)
+            ->json('post', route('v1.author.store'), ['name' => 'Some Guy', 'born' => 1701]);
+
+        $this->assertResponseStatus(Response::HTTP_CREATED);
+        $this->seeJsonStructure(['data' => ['id']]);
+    }
 }
