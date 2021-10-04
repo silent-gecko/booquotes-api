@@ -163,6 +163,25 @@ paths:
           $ref: '#/components/responses/BooksList'
         401:
           $ref: '#/components/responses/Unauthorized'
+    post:
+      security:
+        - ApiKeyAuth: []
+      tags:
+        - books
+      summary: Creates new book
+      requestBody:
+        required: true
+        content:
+          application\json:
+            schema:
+              $ref: '#/components/schemas/Book'
+      responses:
+        201:
+          $ref: '#/components/responses/Created'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
   /books/{uuid}:
     get:
       tags:
@@ -246,12 +265,14 @@ paths:
         content:
           application\json:
             schema:
-              $ref: '#/components/schemas/Author'
+              $ref: '#/components/schemas/AuthorPayload'
       responses:
         201:
           $ref: '#/components/responses/Created'
         400:
           $ref: '#/components/responses/BadRequest'
+        422:
+          $ref: '#/components/responses/UnprocessableEntity'
         401:
           $ref: '#/components/responses/Unauthorized'
   /authors/{uuid}:
@@ -267,12 +288,7 @@ paths:
           content:
             application\json:
               schema:
-                type: object
-                properties:
-                  data:
-                    allOf:
-                      - $ref: '#/components/schemas/Author'
-                      - $ref: '#/components/schemas/AuthorMeta'
+                $ref: '#/components/schemas/Author'
         400:
           $ref: '#/components/responses/BadRequest'
         401:
@@ -290,12 +306,14 @@ paths:
         content:
           application\json:
             schema:
-              $ref: '#/components/schemas/Author'
+              $ref: '#/components/schemas/AuthorPayload'
       responses:
         204:
           $ref: '#/components/responses/NoContent'
         400:
           $ref: '#/components/responses/BadRequest'
+        422:
+          $ref: '#/components/responses/UnprocessableEntity'
         401:
           $ref: '#/components/responses/Unauthorized'
         404:
@@ -371,6 +389,23 @@ components:
             error:
               code: 404
               message: Resource not found.
+    UnprocessableEntity:
+      description: Validation errors
+      content:
+        application\json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/ErrorResponse'
+              - type: object
+                properties:
+                  errors:
+                    type: object
+                    properties:
+                      field_name:
+                        type: array
+                        items:
+                          type: string
+                        example: ['Field_name is required.', 'Field_name should start with capital letter.']
     Created:
       description: Response when resource element is successfully created
       content:
@@ -409,9 +444,7 @@ components:
                   data:
                     type: array
                     items:
-                      allOf:
-                        - $ref: '#/components/schemas/AuthorBasic'
-                        - $ref: '#/components/schemas/AuthorMeta'
+                      $ref: '#/components/schemas/AuthorBasic'
               - $ref: '#/components/schemas/Pagination'
     BooksList:
       description: Successfully returned list of books
@@ -551,10 +584,29 @@ components:
       description: Main data about the author
       type: object
       properties:
+        id:
+          type: string
+          format: uuid
+          description: Author unique id
         name:
           type: string
           example : 'J.R.R. Tolkien'
           description: Author full name
+        links:
+          type: object
+          properties:
+            self:
+              type: string
+              format: url
+              description: Detail author data
+            books:
+              type: string
+              format: url
+              description: List of books of the author
+            quotes:
+              type: string
+              format: url
+              description: List of quotes of the author
       required:
         - name
     Author:
@@ -577,33 +629,32 @@ components:
               nullable: true
               example: "An English writer, poet, philologist, and academic, best known as the author of the high fantasy works The Hobbit and The Lord of the Rings."
               description: Brief info about the author
-    AuthorMeta:
-      description: Author metadata
+            quotes_count:
+              type: integer
+              example: 15
+              description: The number of quotes by this author
+    AuthorPayload:
+      description: Request data
       type: object
       properties:
-        id:
+        name:
           type: string
-          format: uuid
-          description: Author unique id
-        quotes_count:
+          example: 'J.R.R. Tolkien'
+          description: Author full name
+        born:
           type: integer
-          example: 15
-          description: The number of quotes by this author
-        links:
-          type: object
-          properties:
-            self:
-              type: string
-              format: url
-              description: Detail author data
-            books:
-              type: string
-              format: url
-              description: List of books of the author
-            quotes:
-              type: string
-              format: url
-              description: List of quotes of the author
+          example: 1892
+          description: Year when author was born
+        died:
+          type: integer
+          nullable: true
+          example: 1973
+          description: Year when author died (if it has happened)
+        bio:
+          type: string
+          nullable: true
+          example: "An English writer, poet, philologist, and academic, best known as the author of the high fantasy works The Hobbit and The Lord of the Rings."
+          description: Brief info about the author
     Links:
       description: Set of pagination links
       type: object
