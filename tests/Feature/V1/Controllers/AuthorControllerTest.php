@@ -105,7 +105,12 @@ class AuthorControllerTest extends \TestCase
 
         $this->assertResponseStatus(Response::HTTP_CREATED);
         $this->seeJsonStructure(['data' => ['id']]);
-        $this->seeInDatabase('authors', $payload);
+        $this->seeInDatabase('authors', [
+            'name' => 'Some Guy',
+            'year_of_birth' => 1929,
+            'year_of_death' => 2012,
+            'bio'  => 'Some bio',
+        ]);
     }
 
     public function test_store_returns_error_with_duplicate_data()
@@ -128,5 +133,43 @@ class AuthorControllerTest extends \TestCase
 
         $this->assertResponseStatus(Response::HTTP_CREATED);
         $this->seeJsonStructure(['data' => ['id']]);
+    }
+
+    public function test_update_returns_valid_response_with_valid_data()
+    {
+        $author = Author::factory()->create();
+        $payload = [
+            'name' => 'Some Updated Guy',
+            'born' => 1929,
+            'died' => 2012,
+            'bio'  => 'Some updated bio',
+        ];
+
+        $this->actingAs($this->user)
+            ->put(route('v1.author.update', ['uuid' => $author->id]), $payload);
+
+        $this->assertResponseStatus(Response::HTTP_NO_CONTENT);
+        $this->seeInDatabase('authors', [
+            'id'            => $author->id,
+            'name'          => 'Some Updated Guy',
+            'year_of_birth' => 1929,
+            'year_of_death' => 2012,
+        ]);
+    }
+
+    public function test_update_returns_error_with_not_found_id()
+    {
+        $nonExistingUuid = substr_replace(Str::uuid()->toString(), 'aaaaa', -5);
+        $payload = [
+            'name' => 'Some Updated Guy',
+            'born' => 1929,
+            'died' => 2012,
+            'bio'  => 'Some updated bio',
+        ];
+
+        $this->actingAs($this->user)
+            ->put(route('v1.author.update', ['uuid' => $nonExistingUuid]), $payload);
+
+        $this->assertResponseStatus(Response::HTTP_NOT_FOUND);
     }
 }

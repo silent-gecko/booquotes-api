@@ -14,7 +14,7 @@ class AuthorRequestTest extends \TestCase
     /**
      * @dataProvider validationProvider
      */
-    public function test_post_validation_rules($shouldPass, $payload, $message)
+    public function test_validation_rules($shouldPass, $payload, $message)
     {
         $request = new AuthorRequest([], $payload);
         $request->setContainer($this->app);
