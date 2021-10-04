@@ -3,7 +3,6 @@
 namespace App\Http\Requests;
 
 use App\Rules\Year;
-use Illuminate\Http\Response;
 use Pearl\RequestValidate\RequestAbstract;
 
 class AuthorRequest extends RequestAbstract
@@ -38,7 +37,7 @@ class AuthorRequest extends RequestAbstract
      * Transform request data after validation
      * @return array
      */
-    public function transformValidated(): array
+    public function validated(): array
     {
         $data = $this->validated();
 

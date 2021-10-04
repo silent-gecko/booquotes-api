@@ -42,8 +42,7 @@ class AuthorController extends Controller
      */
     public function store(AuthorRequest $request)
     {
-        $validated = $request->transformValidated();
-        $author = Author::create($validated);
+        $author = Author::create($request->validated());
 
         return response()->jsonCreated($author->id);
     }
@@ -51,8 +50,7 @@ class AuthorController extends Controller
     public function update(AuthorRequest $request, string $uuid)
     {
         $author = Author::findOrFail($uuid);
-        $validated = $request->transformValidated();
-        $author->update($validated);
+        $author->update($request->validated());
 
         return response('', Response::HTTP_NO_CONTENT);
     }
