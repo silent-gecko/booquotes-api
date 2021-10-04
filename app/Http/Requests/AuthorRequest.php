@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Rules\Year;
+use Illuminate\Http\Response;
 use Pearl\RequestValidate\RequestAbstract;
 
 class AuthorRequest extends RequestAbstract
@@ -14,16 +15,12 @@ class AuthorRequest extends RequestAbstract
      */
     public function rules(): array
     {
-        if ($this->isMethod('POST')) {
-            return [
-                'name' => ['required', 'string', 'max:100'],
-                'born' => ['required', new Year()],
-                'died' => ['nullable', new Year(), 'gt:born'],
-                'bio'  => ['nullable', 'string'],
-            ];
-        }
-
-        return [];
+        return [
+            'name' => ['required', 'string', 'max:100'],
+            'born' => ['required', new Year()],
+            'died' => ['nullable', new Year(), 'gt:born'],
+            'bio'  => ['nullable', 'string'],
+        ];
     }
 
     /**
@@ -31,7 +28,7 @@ class AuthorRequest extends RequestAbstract
      */
     public function withValidator($validator): void
     {
-        $rule = 'unique:authors,name,'.($this->input('id') ?: 'NULL') .',id,year_of_birth,' . $this->input('born');
+        $rule = 'unique:authors,name,'.($this->route('uuid') ?: 'NULL') .',id,year_of_birth,' . $this->input('born');
         $validator->sometimes('name', $rule, function ($input) {
             return $input->born;
         });
@@ -46,7 +43,6 @@ class AuthorRequest extends RequestAbstract
         $data = $this->validated();
 
         return [
-            'id'            => $data['id'] ?? null,
             'name'          => $data['name'] ?? null,
             'year_of_birth' => $data['born'] ?? null,
             'year_of_death' => $data['died'] ?? null,

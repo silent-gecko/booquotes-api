@@ -279,8 +279,9 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         404:
           $ref: '#/components/responses/NotFound'
-    patch:
-      deprecated: true
+    put:
+      security:
+        - ApiKeyAuth: []
       tags:
         - authors
       summary: Update author data
