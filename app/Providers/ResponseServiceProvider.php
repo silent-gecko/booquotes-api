@@ -29,21 +29,23 @@ class ResponseServiceProvider extends ServiceProvider
         $factory->macro('jsonError', function ($code, $error) use ($factory) {
             $responseFormat = [
                 'error' => [
-                    'code' => $code,
+                    'code'    => $code,
                     'message' => $error ?: Response::$statusTexts[$code],
                 ]
             ];
+
             return $factory->json($responseFormat, $code);
         });
 
         $factory->macro('jsonValidationError', function (ValidationException $exception) use ($factory) {
             $responseFormat = [
                 'error' => [
-                    'code' => $exception->status,
+                    'code'    => $exception->status,
                     'message' => $exception->getMessage(),
-                    'errors' => $exception->errors(),
+                    'errors'  => $exception->errors(),
                 ]
             ];
+
             return $factory->json($responseFormat, $exception->status);
         });
 
@@ -53,12 +55,13 @@ class ResponseServiceProvider extends ServiceProvider
                     'id' => $entityId,
                 ]
             ];
+
             return $factory->json($responseFormat, Response::HTTP_CREATED);
         });
 
         $factory->macro('jsonHealthCheck', function () use ($factory) {
             return $factory->json([
-                'app_name' => config('app.name'),
+                'app_name'    => config('app.name'),
                 'app_version' => config('app.version'),
             ]);
         });
