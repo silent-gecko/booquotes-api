@@ -39,7 +39,7 @@ class AuthorRequest extends RequestAbstract
      */
     public function validated(): array
     {
-        $data = $this->validated();
+        $data = parent::validated();
 
         return [
             'name'          => $data['name'] ?? null,
