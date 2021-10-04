@@ -229,15 +229,46 @@
             "$ref" : "#/components/responses/Unauthorized"
           }
         }
+      },
+      "post" : {
+        "security" : [ {
+          "ApiKeyAuth" : [ ]
+        } ],
+        "tags" : [ "books" ],
+        "summary" : "Creates new book",
+        "requestBody" : {
+          "required" : true,
+          "content" : {
+            "application\\json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/BookPayload"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "201" : {
+            "$ref" : "#/components/responses/Created"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/Unauthorized"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/UnprocessableEntity"
+          }
+        }
       }
     },
     "/books/{uuid}" : {
+      "parameters" : [ {
+        "$ref" : "#/components/parameters/Uuid"
+      } ],
       "get" : {
         "tags" : [ "books" ],
         "summary" : "Returns single book data",
-        "parameters" : [ {
-          "$ref" : "#/components/parameters/Uuid"
-        } ],
         "responses" : {
           "200" : {
             "description" : "Successfully returned book info",
@@ -262,6 +293,64 @@
           },
           "404" : {
             "$ref" : "#/components/responses/NotFound"
+          }
+        }
+      },
+      "put" : {
+        "security" : [ {
+          "ApiKeyAuth" : [ ]
+        } ],
+        "tags" : [ "books" ],
+        "summary" : "Updates book data",
+        "requestBody" : {
+          "required" : true,
+          "content" : {
+            "aplication\\json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/BookPayload"
+              }
+            }
+          }
+        },
+        "responses" : {
+          "204" : {
+            "$ref" : "#/components/responses/NoContent"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/UnprocessableEntity"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/Unauthorized"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          }
+        }
+      },
+      "delete" : {
+        "security" : [ {
+          "ApiKeyAuth" : [ ]
+        } ],
+        "tags" : [ "books" ],
+        "summary" : "Deletes the book",
+        "responses" : {
+          "204" : {
+            "$ref" : "#/components/responses/NoContent"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/Unauthorized"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          },
+          "409" : {
+            "$ref" : "#/components/responses/Conflict"
           }
         }
       }
@@ -344,7 +433,7 @@
           "content" : {
             "application\\json" : {
               "schema" : {
-                "$ref" : "#/components/schemas/Author"
+                "$ref" : "#/components/schemas/AuthorPayload"
               }
             }
           }
@@ -355,6 +444,9 @@
           },
           "400" : {
             "$ref" : "#/components/responses/BadRequest"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/UnprocessableEntity"
           },
           "401" : {
             "$ref" : "#/components/responses/Unauthorized"
@@ -375,16 +467,7 @@
             "content" : {
               "application\\json" : {
                 "schema" : {
-                  "type" : "object",
-                  "properties" : {
-                    "data" : {
-                      "allOf" : [ {
-                        "$ref" : "#/components/schemas/Author"
-                      }, {
-                        "$ref" : "#/components/schemas/AuthorMeta"
-                      } ]
-                    }
-                  }
+                  "$ref" : "#/components/schemas/Author"
                 }
               }
             }
@@ -411,7 +494,7 @@
           "content" : {
             "application\\json" : {
               "schema" : {
-                "$ref" : "#/components/schemas/Author"
+                "$ref" : "#/components/schemas/AuthorPayload"
               }
             }
           }
@@ -422,6 +505,9 @@
           },
           "400" : {
             "$ref" : "#/components/responses/BadRequest"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/UnprocessableEntity"
           },
           "401" : {
             "$ref" : "#/components/responses/Unauthorized"
@@ -536,6 +622,34 @@
           }
         }
       },
+      "UnprocessableEntity" : {
+        "description" : "Validation errors",
+        "content" : {
+          "application\\json" : {
+            "schema" : {
+              "allOf" : [ {
+                "$ref" : "#/components/schemas/ErrorResponse"
+              }, {
+                "type" : "object",
+                "properties" : {
+                  "errors" : {
+                    "type" : "object",
+                    "properties" : {
+                      "field_name" : {
+                        "type" : "array",
+                        "items" : {
+                          "type" : "string"
+                        },
+                        "example" : [ "Field_name is required.", "Field_name should start with capital letter." ]
+                      }
+                    }
+                  }
+                }
+              } ]
+            }
+          }
+        }
+      },
       "Created" : {
         "description" : "Response when resource element is successfully created",
         "content" : {
@@ -588,11 +702,7 @@
                   "data" : {
                     "type" : "array",
                     "items" : {
-                      "allOf" : [ {
-                        "$ref" : "#/components/schemas/AuthorBasic"
-                      }, {
-                        "$ref" : "#/components/schemas/AuthorMeta"
-                      } ]
+                      "$ref" : "#/components/schemas/AuthorBasic"
                     }
                   }
                 }
@@ -782,21 +892,68 @@
             },
             "description" : {
               "type" : "string",
-              "example" : "The Return of the King is the third and final volume of J. R. R. Tolkien\\'s The Lord of the Rings. It was published in 1955. The story begins in the kingdom of Gondor, which is soon to be attacked by the Dark Lord Sauron.\n",
+              "example" : "The Return of the King is the third and final volume of J. R. R. Tolkien's The Lord of the Rings.",
               "description" : "A brief description of the book",
               "nullable" : true
             }
           }
         } ]
       },
+      "BookPayload" : {
+        "description" : "Request data",
+        "type" : "object",
+        "properties" : {
+          "title" : {
+            "type" : "string",
+            "example" : "The Return Of The King",
+            "description" : "Book title"
+          },
+          "description" : {
+            "type" : "string",
+            "example" : "The Return of the King is the third and final volume of J. R. R. Tolkien's The Lord of the Rings.",
+            "description" : "A brief description of the book",
+            "nullable" : true
+          },
+          "author" : {
+            "type" : "string",
+            "format" : "uuid",
+            "description" : "Author unique id"
+          }
+        }
+      },
       "AuthorBasic" : {
         "description" : "Main data about the author",
         "type" : "object",
         "properties" : {
+          "id" : {
+            "type" : "string",
+            "format" : "uuid",
+            "description" : "Author unique id"
+          },
           "name" : {
             "type" : "string",
             "example" : "J.R.R. Tolkien",
             "description" : "Author full name"
+          },
+          "links" : {
+            "type" : "object",
+            "properties" : {
+              "self" : {
+                "type" : "string",
+                "format" : "url",
+                "description" : "Detail author data"
+              },
+              "books" : {
+                "type" : "string",
+                "format" : "url",
+                "description" : "List of books of the author"
+              },
+              "quotes" : {
+                "type" : "string",
+                "format" : "url",
+                "description" : "List of quotes of the author"
+              }
+            }
           }
         },
         "required" : [ "name" ]
@@ -824,43 +981,40 @@
               "nullable" : true,
               "example" : "An English writer, poet, philologist, and academic, best known as the author of the high fantasy works The Hobbit and The Lord of the Rings.",
               "description" : "Brief info about the author"
+            },
+            "quotes_count" : {
+              "type" : "integer",
+              "example" : 15,
+              "description" : "The number of quotes by this author"
             }
           }
         } ]
       },
-      "AuthorMeta" : {
-        "description" : "Author metadata",
+      "AuthorPayload" : {
+        "description" : "Request data",
         "type" : "object",
         "properties" : {
-          "id" : {
+          "name" : {
             "type" : "string",
-            "format" : "uuid",
-            "description" : "Author unique id"
+            "example" : "J.R.R. Tolkien",
+            "description" : "Author full name"
           },
-          "quotes_count" : {
+          "born" : {
             "type" : "integer",
-            "example" : 15,
-            "description" : "The number of quotes by this author"
+            "example" : 1892,
+            "description" : "Year when author was born"
           },
-          "links" : {
-            "type" : "object",
-            "properties" : {
-              "self" : {
-                "type" : "string",
-                "format" : "url",
-                "description" : "Detail author data"
-              },
-              "books" : {
-                "type" : "string",
-                "format" : "url",
-                "description" : "List of books of the author"
-              },
-              "quotes" : {
-                "type" : "string",
-                "format" : "url",
-                "description" : "List of quotes of the author"
-              }
-            }
+          "died" : {
+            "type" : "integer",
+            "nullable" : true,
+            "example" : 1973,
+            "description" : "Year when author died (if it has happened)"
+          },
+          "bio" : {
+            "type" : "string",
+            "nullable" : true,
+            "example" : "An English writer, poet, philologist, and academic, best known as the author of the high fantasy works The Hobbit and The Lord of the Rings.",
+            "description" : "Brief info about the author"
           }
         }
       },
