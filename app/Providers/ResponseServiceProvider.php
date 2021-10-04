@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Http\Response;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Validation\ValidationException;
 use Laravel\Lumen\Http\ResponseFactory;
 
 class ResponseServiceProvider extends ServiceProvider
@@ -33,6 +34,17 @@ class ResponseServiceProvider extends ServiceProvider
                 ]
             ];
             return $factory->json($responseFormat, $code);
+        });
+
+        $factory->macro('jsonValidationError', function (ValidationException $exception) use ($factory) {
+            $responseFormat = [
+                'error' => [
+                    'code' => $exception->status,
+                    'message' => $exception->getMessage(),
+                    'errors' => $exception->errors(),
+                ]
+            ];
+            return $factory->json($responseFormat, $exception->status);
         });
 
         $factory->macro('jsonCreated', function ($entityId) use ($factory) {
