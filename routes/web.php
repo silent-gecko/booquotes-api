@@ -48,5 +48,6 @@ $router->group(['prefix' => 'api/v1'], function () use ($router) {
     $router->group(['middleware' => 'auth'], function() use ($router) {
         $router->post('/authors', ['as' => 'v1.author.store', 'uses' => 'AuthorController@store']);
         $router->put('/authors/{uuid}', ['as' => 'v1.author.update', 'uses' => 'AuthorController@update']);
+        $router->delete('/authors/{uuid}', ['as' => 'v1.author.destroy', 'uses' => 'AuthorController@destroy']);
     });
 });

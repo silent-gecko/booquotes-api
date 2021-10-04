@@ -56,4 +56,17 @@ class AuthorController extends Controller
 
         return response('', Response::HTTP_NO_CONTENT);
     }
+
+    public function destroy(string $uuid)
+    {
+        $author = Author::findOrFail($uuid);
+        if ($author->books->count()) {
+            return response()->jsonError(Response::HTTP_CONFLICT,
+                'Author can not be deleted: there are related books in collection.');
+        }
+
+        $author->delete();
+
+        return response('', Response::HTTP_NO_CONTENT);
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace Feature\V1\Controllers;
 
+use App\Models\Book;
 use App\Models\User;
 use App\Models\Author;
 use Illuminate\Database\Eloquent\Model;
@@ -169,6 +170,38 @@ class AuthorControllerTest extends \TestCase
 
         $this->actingAs($this->user)
             ->put(route('v1.author.update', ['uuid' => $nonExistingUuid]), $payload);
+
+        $this->assertResponseStatus(Response::HTTP_NOT_FOUND);
+    }
+
+    public function test_destroy_returns_valid_data_with_valid_id()
+    {
+        $author = Author::factory()->create();
+
+        $this->actingAs($this->user)
+            ->delete(route('v1.author.destroy', ['uuid' => $author->id]));
+
+        $this->assertResponseStatus(Response::HTTP_NO_CONTENT);
+        $this->missingFromDatabase('authors', $author->attributesToArray());
+    }
+
+    public function test_destroy_returns_valid_data_when_cannot_delete()
+    {
+        $author = Author::factory()->has(Book::factory()->count(3))->create();
+
+        $this->actingAs($this->user)
+            ->delete(route('v1.author.destroy', ['uuid' => $author->id]));
+
+        $this->assertResponseStatus(Response::HTTP_CONFLICT);
+        $this->seeInDatabase('authors', $author->attributesToArray());
+    }
+
+    public function test_destroy_returns_error_with_not_found_id()
+    {
+        $nonExistingUuid = substr_replace(Str::uuid()->toString(), 'aaaaa', -5);
+
+        $this->actingAs($this->user)
+            ->delete(route('v1.author.destroy', ['uuid' => $nonExistingUuid]));
 
         $this->assertResponseStatus(Response::HTTP_NOT_FOUND);
     }

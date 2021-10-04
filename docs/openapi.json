@@ -405,7 +405,7 @@
           "ApiKeyAuth" : [ ]
         } ],
         "tags" : [ "authors" ],
-        "summary" : "Update author data",
+        "summary" : "Updates author data",
         "requestBody" : {
           "required" : true,
           "content" : {
@@ -432,9 +432,11 @@
         }
       },
       "delete" : {
-        "deprecated" : true,
+        "security" : [ {
+          "ApiKeyAuth" : [ ]
+        } ],
         "tags" : [ "authors" ],
-        "summary" : "Delete author data",
+        "summary" : "Deletes author data",
         "description" : "If author has related books, deletion won't be possible",
         "responses" : {
           "204" : {
@@ -448,6 +450,9 @@
           },
           "404" : {
             "$ref" : "#/components/responses/NotFound"
+          },
+          "409" : {
+            "$ref" : "#/components/responses/Conflict"
           }
         }
       }
@@ -555,6 +560,22 @@
       },
       "NoContent" : {
         "description" : "Action completed successfully"
+      },
+      "Conflict" : {
+        "description" : "Action can not be processed because of data conflict",
+        "content" : {
+          "application\\json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/ErrorResponse"
+            },
+            "example" : {
+              "error" : {
+                "code" : 409,
+                "message" : "Action can not be processed"
+              }
+            }
+          }
+        }
       },
       "AuthorsList" : {
         "description" : "Successfully returned list of authors",
