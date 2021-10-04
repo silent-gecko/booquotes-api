@@ -14,9 +14,12 @@
 */
 
 $router->group(['prefix' => 'api/v1'], function () use ($router) {
-    $router->get('/', ['as' => 'v1.home', function () use ($router) {
-        return response()->jsonHealthCheck();
-    }]);
+    $router->get('/', [
+        'as' => 'v1.home',
+        function () use ($router) {
+            return response()->jsonHealthCheck();
+        }
+    ]);
 
     $router->group([], function () use ($router) {
         $router->get('/authors', ['as' => 'v1.author.index', 'uses' => 'AuthorController@index']);
@@ -31,12 +34,12 @@ $router->group(['prefix' => 'api/v1'], function () use ($router) {
         ]);
 
         $router->get('/authors/{uuid}/quotes', [
-            'as' => 'v1.author.quote.show',
+            'as'   => 'v1.author.quote.show',
             'uses' => 'AuthorQuoteController@show'
         ]);
 
         $router->get('/books/{uuid}/quotes', [
-            'as' => 'v1.book.quote.show',
+            'as'   => 'v1.book.quote.show',
             'uses' => 'BookQuoteController@show'
         ]);
 
@@ -45,9 +48,13 @@ $router->group(['prefix' => 'api/v1'], function () use ($router) {
         $router->get('/quotes/{uuid}', ['as' => 'v1.quote.show', 'uses' => 'QuoteController@show']);
     });
 
-    $router->group(['middleware' => 'auth'], function() use ($router) {
+    $router->group(['middleware' => 'auth'], function () use ($router) {
         $router->post('/authors', ['as' => 'v1.author.store', 'uses' => 'AuthorController@store']);
         $router->put('/authors/{uuid}', ['as' => 'v1.author.update', 'uses' => 'AuthorController@update']);
         $router->delete('/authors/{uuid}', ['as' => 'v1.author.destroy', 'uses' => 'AuthorController@destroy']);
+
+        $router->post('/books', ['as' => 'v1.books.store', 'uses' => 'BookController@store']);
+        $router->put('/books/{uuid}', ['as' => 'v1.books.update', 'uses' => 'BookController@update']);
+        $router->delete('/books/{uuid}', ['as' => 'v1.books.destroy', 'uses' => 'BookController@destroy']);
     });
 });

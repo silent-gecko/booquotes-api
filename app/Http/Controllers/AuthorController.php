@@ -47,6 +47,12 @@ class AuthorController extends Controller
         return response()->jsonCreated($author->id);
     }
 
+    /**
+     * @param AuthorRequest $request
+     * @param string        $uuid
+     *
+     * @return Response|\Laravel\Lumen\Http\ResponseFactory
+     */
     public function update(AuthorRequest $request, string $uuid)
     {
         $author = Author::findOrFail($uuid);
@@ -55,6 +61,11 @@ class AuthorController extends Controller
         return response('', Response::HTTP_NO_CONTENT);
     }
 
+    /**
+     * @param string $uuid
+     *
+     * @return Response|\Laravel\Lumen\Http\ResponseFactory
+     */
     public function destroy(string $uuid)
     {
         $author = Author::findOrFail($uuid);

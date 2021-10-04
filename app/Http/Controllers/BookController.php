@@ -31,4 +31,6 @@ class BookController extends Controller
     {
         return new BookResource(Book::findOrFail($uuid));
     }
+
+
 }
