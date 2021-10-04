@@ -29,7 +29,7 @@ class ResponseServiceProvider extends ServiceProvider
             $responseFormat = [
                 'error' => [
                     'code' => $code,
-                    'message' => $error,
+                    'message' => $error ?: Response::$statusTexts[$code],
                 ]
             ];
             return $factory->json($responseFormat, $code);
