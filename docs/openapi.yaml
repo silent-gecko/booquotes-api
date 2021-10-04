@@ -174,7 +174,7 @@ paths:
         content:
           application\json:
             schema:
-              $ref: '#/components/schemas/Book'
+              $ref: '#/components/schemas/BookPayload'
       responses:
         201:
           $ref: '#/components/responses/Created'
@@ -182,13 +182,15 @@ paths:
           $ref: '#/components/responses/BadRequest'
         401:
           $ref: '#/components/responses/Unauthorized'
+        422:
+          $ref: '#/components/responses/UnprocessableEntity'
   /books/{uuid}:
+    parameters:
+      - $ref: '#/components/parameters/Uuid'
     get:
       tags:
         - books
       summary: Returns single book data
-      parameters:
-        - $ref: '#/components/parameters/Uuid'
       responses:
         200:
           description: Successfully returned book info
@@ -205,6 +207,46 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         404:
           $ref: '#/components/responses/NotFound'
+    put:
+      security:
+        - ApiKeyAuth: []
+      tags:
+        - books
+      summary: Updates book data
+      requestBody:
+        required: true
+        content:
+          aplication\json:
+            schema:
+              $ref: '#/components/schemas/BookPayload'
+      responses:
+        204:
+          $ref: '#/components/responses/NoContent'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        422:
+          $ref: '#/components/responses/UnprocessableEntity'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+    delete:
+      security:
+        - ApiKeyAuth: []
+      tags:
+        - books
+      summary: Deletes the book
+      responses:
+        204:
+          $ref: '#/components/responses/NoContent'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        409:
+          $ref: '#/components/responses/Conflict'
   /authors/{uuid}/books:
     get:
       tags:
@@ -576,10 +618,26 @@ components:
               description: The number of quotes from this book
             description:
               type: string
-              example: |
-                The Return of the King is the third and final volume of J. R. R. Tolkien\'s The Lord of the Rings. It was published in 1955. The story begins in the kingdom of Gondor, which is soon to be attacked by the Dark Lord Sauron.
+              example: 'The Return of the King is the third and final volume of J. R. R. Tolkien''s The Lord of the Rings.'
               description: A brief description of the book
               nullable: true
+    BookPayload:
+      description: Request data
+      type: object
+      properties:
+        title:
+          type: string
+          example: 'The Return Of The King'
+          description: Book title
+        description:
+          type: string
+          example: 'The Return of the King is the third and final volume of J. R. R. Tolkien''s The Lord of the Rings.'
+          description: A brief description of the book
+          nullable: true
+        author:
+          type: string
+          format: uuid
+          description: Author unique id
     AuthorBasic:
       description: Main data about the author
       type: object
