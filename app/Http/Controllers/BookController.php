@@ -13,7 +13,7 @@ class BookController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('check_uuid', ['only' => ['show']]);
+        $this->middleware('check_uuid', ['only' => ['show', 'update', 'destroy']]);
     }
 
     /**

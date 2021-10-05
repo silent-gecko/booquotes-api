@@ -14,7 +14,7 @@ class AuthorController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('check_uuid', ['only' => ['show', 'update']]);
+        $this->middleware('check_uuid', ['only' => ['show', 'update', 'destroy']]);
     }
 
     /**
