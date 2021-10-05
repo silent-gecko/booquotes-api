@@ -634,7 +634,7 @@ components:
           example: 'The Return of the King is the third and final volume of J. R. R. Tolkien''s The Lord of the Rings.'
           description: A brief description of the book
           nullable: true
-        author:
+        author_id:
           type: string
           format: uuid
           description: Author unique id

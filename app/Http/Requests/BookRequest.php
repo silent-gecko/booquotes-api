@@ -16,16 +16,7 @@ class BookRequest extends RequestAbstract
         return [
             'title' => ['required', 'string', 'max:160'],
             'description'  => ['nullable', 'string'],
-            'author' => ['required', 'uuid', 'exists:authors,id'],
+            'author_id' => ['required', 'uuid', 'exists:authors,id'],
         ];
-    }
-
-    public function validated(): array
-    {
-        $data = parent::validated();
-        $data['author_id'] = $data['author'];
-        unset($data['author']);
-
-        return $data;
     }
 }
