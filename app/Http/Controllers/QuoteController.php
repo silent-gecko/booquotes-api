@@ -70,7 +70,12 @@ class QuoteController extends Controller
         return response('', Response::HTTP_NO_CONTENT);
     }
 
-    public function destroy(QuoteRequest $request, string $uuid)
+    /**
+     * @param string       $uuid
+     *
+     * @return Response|\Laravel\Lumen\Http\ResponseFactory
+     */
+    public function destroy(string $uuid)
     {
         $quote = Quote::findOrFail($uuid);
 
