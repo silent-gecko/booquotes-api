@@ -58,6 +58,7 @@ $router->group(['prefix' => 'api/v1'], function () use ($router) {
         $router->delete('/books/{uuid}', ['as' => 'v1.book.destroy', 'uses' => 'BookController@destroy']);
 
         $router->post('/quotes', ['as' => 'v1.quote.store', 'uses' => 'QuoteController@store']);
-        //$router->put('/quotes/{uuid}');
+        $router->put('/quotes/{uuid}', ['as' => 'v1.quote.update', 'uses' => 'QuoteController@update']);
+        $router->delete('/quotes/{uuid}', ['as' => 'v1.quote.destroy', 'uses' => 'QuoteController@destroy']);
     });
 });

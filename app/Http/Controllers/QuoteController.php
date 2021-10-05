@@ -2,17 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\QuoteRequest;
 use App\Models\Quote;
 use App\Http\Resources\QuoteCollection;
 use App\Http\Resources\QuoteResource;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 
 class QuoteController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('check_uuid', ['only' => ['show']]);
+        $this->middleware('check_uuid', ['only' => ['show', 'update', 'destroy']]);
     }
 
     /**
@@ -39,5 +41,41 @@ class QuoteController extends Controller
     public function showRandom()
     {
         return new QuoteResource(Quote::inRandomOrder()->first());
+    }
+
+    /**
+     * @param QuoteRequest $request
+     *
+     * @return mixed
+     */
+    public function store(QuoteRequest $request)
+    {
+        $quote = Quote::create($request->validated());
+
+        return response()->jsonCreated($quote->id);
+    }
+
+    /**
+     * @param QuoteRequest $request
+     * @param string       $uuid
+     *
+     * @return Response|\Laravel\Lumen\Http\ResponseFactory
+     */
+    public function update(QuoteRequest $request, string $uuid)
+    {
+        $quote = Quote::findOrFail($uuid);
+
+        $quote->update($request->validated());
+
+        return response('', Response::HTTP_NO_CONTENT);
+    }
+
+    public function destroy(QuoteRequest $request, string $uuid)
+    {
+        $quote = Quote::findOrFail($uuid);
+
+        $quote->delete();
+
+        return response('', Response::HTTP_NO_CONTENT);
     }
 }
