@@ -1,19 +1,16 @@
 {
   "openapi" : "3.0.0",
   "info" : {
-    "version" : "1.0.0",
+    "version" : "1.1.0",
     "title" : "BooQuotes API",
-    "description" : "This API allows to retrieve literary quotes and related info from the data collection"
+    "description" : "This API allows to retrieve and operate on literary quotes and related entities of the service data collection."
   },
   "servers" : [ {
     "description" : "SwaggerHub API Auto Mocking",
-    "url" : "https://virtserver.swaggerhub.com/silent-gecko/Quotes/1.0.0"
+    "url" : "https://virtserver.swaggerhub.com/silent-gecko/Quotes/1.1.0"
   }, {
     "description" : "Local development server",
     "url" : "http://localhost:8080/api/v1"
-  } ],
-  "security" : [ {
-    "ApiKeyAuth" : [ ]
   } ],
   "paths" : {
     "/quotes" : {
@@ -44,15 +41,42 @@
             "$ref" : "#/components/responses/Unauthorized"
           }
         }
+      },
+      "post" : {
+        "security" : [ {
+          "ApiKeyAuth" : [ ]
+        } ],
+        "tags" : [ "quotes" ],
+        "summary" : "Creates new quote",
+        "requestBody" : {
+          "$ref" : "#/components/requestBodies/QuotePayload"
+        },
+        "responses" : {
+          "201" : {
+            "$ref" : "#/components/responses/Created"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/Unauthorized"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/UnprocessableEntity"
+          }
+        }
       }
     },
     "/quotes/{uuid}" : {
+      "parameters" : [ {
+        "$ref" : "#/components/parameters/Uuid"
+      } ],
       "get" : {
         "tags" : [ "quotes" ],
         "summary" : "Returns single quote",
-        "parameters" : [ {
-          "$ref" : "#/components/parameters/Uuid"
-        } ],
         "responses" : {
           "200" : {
             "description" : "Successfully returned single quote item",
@@ -77,6 +101,77 @@
           },
           "404" : {
             "$ref" : "#/components/responses/NotFound"
+          }
+        }
+      },
+      "put" : {
+        "security" : [ {
+          "ApiKeyAuth" : [ ]
+        } ],
+        "tags" : [ "quotes" ],
+        "summary" : "Updates quote",
+        "requestBody" : {
+          "$ref" : "#/components/requestBodies/QuotePayload"
+        },
+        "responses" : {
+          "204" : {
+            "$ref" : "#/components/responses/NoContent"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/Unauthorized"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/UnprocessableEntity"
+          }
+        }
+      },
+      "delete" : {
+        "security" : [ {
+          "ApiKeyAuth" : [ ]
+        } ],
+        "tags" : [ "quotes" ],
+        "summary" : "Deletes quote",
+        "responses" : {
+          "204" : {
+            "$ref" : "#/components/responses/NoContent"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/Unauthorized"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/quotes/{uuid}/download" : {
+      "get" : {
+        "deprecated" : true,
+        "tags" : [ "quotes" ],
+        "summary" : "Returns an image with formatted quote data on it",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/Uuid"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Quote image in PNG format",
+            "content" : {
+              "image\\png" : {
+                "schema" : {
+                  "type" : "string",
+                  "format" : "base64"
+                }
+              }
+            }
           }
         }
       }
@@ -107,71 +202,6 @@
         }
       }
     },
-    "/books" : {
-      "get" : {
-        "tags" : [ "books" ],
-        "summary" : "Returns the list of books",
-        "parameters" : [ {
-          "$ref" : "#/components/parameters/Pagination"
-        }, {
-          "in" : "query",
-          "name" : "sort",
-          "description" : "Sorting settings",
-          "style" : "form",
-          "explode" : false,
-          "allowReserved" : true,
-          "schema" : {
-            "type" : "array",
-            "items" : {
-              "enum" : [ "title:desc", "title:asc", "author:desc", "author:asc" ]
-            }
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "$ref" : "#/components/responses/BooksList"
-          },
-          "401" : {
-            "$ref" : "#/components/responses/Unauthorized"
-          }
-        }
-      }
-    },
-    "/books/{uuid}" : {
-      "get" : {
-        "tags" : [ "books" ],
-        "summary" : "Returns single book data",
-        "parameters" : [ {
-          "$ref" : "#/components/parameters/Uuid"
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "Successfully returned book info",
-            "content" : {
-              "application\\json" : {
-                "schema" : {
-                  "type" : "object",
-                  "properties" : {
-                    "data" : {
-                      "$ref" : "#/components/schemas/Book"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400" : {
-            "$ref" : "#/components/responses/BadRequest"
-          },
-          "401" : {
-            "$ref" : "#/components/responses/Unauthorized"
-          },
-          "404" : {
-            "$ref" : "#/components/responses/NotFound"
-          }
-        }
-      }
-    },
     "/books/{uuid}/quotes" : {
       "get" : {
         "tags" : [ "quotes" ],
@@ -195,109 +225,6 @@
         "responses" : {
           "200" : {
             "$ref" : "#/components/responses/QuotesList"
-          },
-          "400" : {
-            "$ref" : "#/components/responses/BadRequest"
-          },
-          "401" : {
-            "$ref" : "#/components/responses/Unauthorized"
-          },
-          "404" : {
-            "$ref" : "#/components/responses/NotFound"
-          }
-        }
-      }
-    },
-    "/authors" : {
-      "get" : {
-        "tags" : [ "authors" ],
-        "summary" : "Returns the list of authors",
-        "parameters" : [ {
-          "$ref" : "#/components/parameters/Pagination"
-        }, {
-          "in" : "query",
-          "name" : "sort",
-          "description" : "Sorting settings",
-          "style" : "form",
-          "explode" : false,
-          "allowReserved" : true,
-          "schema" : {
-            "type" : "array",
-            "items" : {
-              "enum" : [ "name:desc", "name:asc" ]
-            }
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "$ref" : "#/components/responses/AuthorsList"
-          },
-          "401" : {
-            "$ref" : "#/components/responses/Unauthorized"
-          }
-        }
-      }
-    },
-    "/authors/{uuid}" : {
-      "get" : {
-        "tags" : [ "authors" ],
-        "summary" : "Returns single author data",
-        "parameters" : [ {
-          "$ref" : "#/components/parameters/Uuid"
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "Successfully returned author data",
-            "content" : {
-              "application\\json" : {
-                "schema" : {
-                  "type" : "object",
-                  "properties" : {
-                    "data" : {
-                      "$ref" : "#/components/schemas/Author"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400" : {
-            "$ref" : "#/components/responses/BadRequest"
-          },
-          "401" : {
-            "$ref" : "#/components/responses/Unauthorized"
-          },
-          "404" : {
-            "$ref" : "#/components/responses/NotFound"
-          }
-        }
-      }
-    },
-    "/authors/{uuid}/books" : {
-      "get" : {
-        "tags" : [ "books" ],
-        "summary" : "Returns list of the author books where quotes are presented",
-        "parameters" : [ {
-          "$ref" : "#/components/parameters/Uuid"
-        }, {
-          "$ref" : "#/components/parameters/Pagination"
-        }, {
-          "in" : "query",
-          "name" : "sort",
-          "description" : "Sorting settings",
-          "style" : "form",
-          "explode" : false,
-          "allowReserved" : true,
-          "schema" : {
-            "type" : "array",
-            "items" : {
-              "enum" : [ "title:desc", "title:asc" ]
-            }
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "$ref" : "#/components/responses/BooksList"
           },
           "400" : {
             "$ref" : "#/components/responses/BadRequest"
@@ -348,6 +275,320 @@
           }
         }
       }
+    },
+    "/books" : {
+      "get" : {
+        "tags" : [ "books" ],
+        "summary" : "Returns the list of books",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/Pagination"
+        }, {
+          "in" : "query",
+          "name" : "sort",
+          "description" : "Sorting settings",
+          "style" : "form",
+          "explode" : false,
+          "allowReserved" : true,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "enum" : [ "title:desc", "title:asc", "author:desc", "author:asc" ]
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "$ref" : "#/components/responses/BooksList"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/Unauthorized"
+          }
+        }
+      },
+      "post" : {
+        "security" : [ {
+          "ApiKeyAuth" : [ ]
+        } ],
+        "tags" : [ "books" ],
+        "summary" : "Creates new book",
+        "requestBody" : {
+          "$ref" : "#/components/requestBodies/BookPayload"
+        },
+        "responses" : {
+          "201" : {
+            "$ref" : "#/components/responses/Created"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/Unauthorized"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/UnprocessableEntity"
+          }
+        }
+      }
+    },
+    "/books/{uuid}" : {
+      "parameters" : [ {
+        "$ref" : "#/components/parameters/Uuid"
+      } ],
+      "get" : {
+        "tags" : [ "books" ],
+        "summary" : "Returns single book data",
+        "responses" : {
+          "200" : {
+            "description" : "Successfully returned book info",
+            "content" : {
+              "application\\json" : {
+                "schema" : {
+                  "type" : "object",
+                  "properties" : {
+                    "data" : {
+                      "$ref" : "#/components/schemas/Book"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/Unauthorized"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          }
+        }
+      },
+      "put" : {
+        "security" : [ {
+          "ApiKeyAuth" : [ ]
+        } ],
+        "tags" : [ "books" ],
+        "summary" : "Updates book data",
+        "requestBody" : {
+          "$ref" : "#/components/requestBodies/BookPayload"
+        },
+        "responses" : {
+          "204" : {
+            "$ref" : "#/components/responses/NoContent"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/UnprocessableEntity"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/Unauthorized"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          }
+        }
+      },
+      "delete" : {
+        "security" : [ {
+          "ApiKeyAuth" : [ ]
+        } ],
+        "tags" : [ "books" ],
+        "summary" : "Deletes the book",
+        "responses" : {
+          "204" : {
+            "$ref" : "#/components/responses/NoContent"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/Unauthorized"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          },
+          "409" : {
+            "$ref" : "#/components/responses/Conflict"
+          }
+        }
+      }
+    },
+    "/authors/{uuid}/books" : {
+      "get" : {
+        "tags" : [ "books" ],
+        "summary" : "Returns list of the author books",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/Uuid"
+        }, {
+          "$ref" : "#/components/parameters/Pagination"
+        }, {
+          "in" : "query",
+          "name" : "sort",
+          "description" : "Sorting settings",
+          "style" : "form",
+          "explode" : false,
+          "allowReserved" : true,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "enum" : [ "title:desc", "title:asc" ]
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "$ref" : "#/components/responses/BooksList"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/Unauthorized"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          }
+        }
+      }
+    },
+    "/authors" : {
+      "get" : {
+        "tags" : [ "authors" ],
+        "summary" : "Returns the list of authors",
+        "parameters" : [ {
+          "$ref" : "#/components/parameters/Pagination"
+        }, {
+          "in" : "query",
+          "name" : "sort",
+          "description" : "Sorting settings",
+          "style" : "form",
+          "explode" : false,
+          "allowReserved" : true,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "enum" : [ "name:desc", "name:asc" ]
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "$ref" : "#/components/responses/AuthorsList"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/Unauthorized"
+          }
+        }
+      },
+      "post" : {
+        "security" : [ {
+          "ApiKeyAuth" : [ ]
+        } ],
+        "tags" : [ "authors" ],
+        "summary" : "Adds new author to the collection",
+        "requestBody" : {
+          "$ref" : "#/components/requestBodies/AuthorPayload"
+        },
+        "responses" : {
+          "201" : {
+            "$ref" : "#/components/responses/Created"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/UnprocessableEntity"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/Unauthorized"
+          }
+        }
+      }
+    },
+    "/authors/{uuid}" : {
+      "parameters" : [ {
+        "$ref" : "#/components/parameters/Uuid"
+      } ],
+      "get" : {
+        "tags" : [ "authors" ],
+        "summary" : "Returns single author data",
+        "responses" : {
+          "200" : {
+            "description" : "Successfully returned author data",
+            "content" : {
+              "application\\json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Author"
+                }
+              }
+            }
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/Unauthorized"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          }
+        }
+      },
+      "put" : {
+        "security" : [ {
+          "ApiKeyAuth" : [ ]
+        } ],
+        "tags" : [ "authors" ],
+        "summary" : "Updates author data",
+        "requestBody" : {
+          "$ref" : "#/components/requestBodies/AuthorPayload"
+        },
+        "responses" : {
+          "204" : {
+            "$ref" : "#/components/responses/NoContent"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "422" : {
+            "$ref" : "#/components/responses/UnprocessableEntity"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/Unauthorized"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          }
+        }
+      },
+      "delete" : {
+        "security" : [ {
+          "ApiKeyAuth" : [ ]
+        } ],
+        "tags" : [ "authors" ],
+        "summary" : "Deletes author data",
+        "description" : "If author has related books, deletion won't be possible",
+        "responses" : {
+          "204" : {
+            "$ref" : "#/components/responses/NoContent"
+          },
+          "400" : {
+            "$ref" : "#/components/responses/BadRequest"
+          },
+          "401" : {
+            "$ref" : "#/components/responses/Unauthorized"
+          },
+          "404" : {
+            "$ref" : "#/components/responses/NotFound"
+          },
+          "409" : {
+            "$ref" : "#/components/responses/Conflict"
+          }
+        }
+      }
     }
   },
   "components" : {
@@ -377,6 +618,38 @@
           "format" : "uuid"
         },
         "required" : true
+      }
+    },
+    "requestBodies" : {
+      "AuthorPayload" : {
+        "required" : true,
+        "content" : {
+          "application\\json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/AuthorPayload"
+            }
+          }
+        }
+      },
+      "BookPayload" : {
+        "required" : true,
+        "content" : {
+          "application\\json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/BookPayload"
+            }
+          }
+        }
+      },
+      "QuotePayload" : {
+        "required" : true,
+        "content" : {
+          "application\\json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/QuotePayload"
+            }
+          }
+        }
       }
     },
     "responses" : {
@@ -423,6 +696,75 @@
               "error" : {
                 "code" : 404,
                 "message" : "Resource not found."
+              }
+            }
+          }
+        }
+      },
+      "UnprocessableEntity" : {
+        "description" : "Validation errors",
+        "content" : {
+          "application\\json" : {
+            "schema" : {
+              "allOf" : [ {
+                "$ref" : "#/components/schemas/ErrorResponse"
+              }, {
+                "type" : "object",
+                "properties" : {
+                  "errors" : {
+                    "type" : "object",
+                    "properties" : {
+                      "field_name" : {
+                        "type" : "array",
+                        "items" : {
+                          "type" : "string"
+                        },
+                        "example" : [ "Field_name is required.", "Field_name should start with capital letter." ]
+                      }
+                    }
+                  }
+                }
+              } ]
+            }
+          }
+        }
+      },
+      "Created" : {
+        "description" : "Response when resource element is successfully created",
+        "content" : {
+          "application\\json" : {
+            "schema" : {
+              "type" : "object",
+              "properties" : {
+                "data" : {
+                  "type" : "object",
+                  "properties" : {
+                    "id" : {
+                      "type" : "string",
+                      "format" : "uuid"
+                    }
+                  },
+                  "required" : [ "id" ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "NoContent" : {
+        "description" : "Action completed successfully"
+      },
+      "Conflict" : {
+        "description" : "Action can not be processed because of data conflict",
+        "content" : {
+          "application\\json" : {
+            "schema" : {
+              "$ref" : "#/components/schemas/ErrorResponse"
+            },
+            "example" : {
+              "error" : {
+                "code" : 409,
+                "message" : "Action can not be processed"
               }
             }
           }
@@ -563,6 +905,22 @@
         },
         "required" : [ "text" ]
       },
+      "QuotePayload" : {
+        "description" : "Request data",
+        "type" : "object",
+        "properties" : {
+          "text" : {
+            "type" : "string",
+            "description" : "The quote itself",
+            "example" : "There is some good in this world, and it’s worth fighting for."
+          },
+          "book_id" : {
+            "type" : "string",
+            "format" : "uuid",
+            "description" : "Book unique id"
+          }
+        }
+      },
       "BookBasic" : {
         "description" : "Minimal data about the book",
         "type" : "object",
@@ -629,12 +987,34 @@
             },
             "description" : {
               "type" : "string",
-              "example" : "The Return of the King is the third and final volume of J. R. R. Tolkien\\'s The Lord of the Rings. It was published in 1955. The story begins in the kingdom of Gondor, which is soon to be attacked by the Dark Lord Sauron.\n",
+              "example" : "The Return of the King is the third and final volume of J. R. R. Tolkien's The Lord of the Rings.",
               "description" : "A brief description of the book",
               "nullable" : true
             }
           }
         } ]
+      },
+      "BookPayload" : {
+        "description" : "Request data",
+        "type" : "object",
+        "properties" : {
+          "title" : {
+            "type" : "string",
+            "example" : "The Return Of The King",
+            "description" : "Book title"
+          },
+          "description" : {
+            "type" : "string",
+            "example" : "The Return of the King is the third and final volume of J. R. R. Tolkien's The Lord of the Rings.",
+            "description" : "A brief description of the book",
+            "nullable" : true
+          },
+          "author_id" : {
+            "type" : "string",
+            "format" : "uuid",
+            "description" : "Author unique id"
+          }
+        }
       },
       "AuthorBasic" : {
         "description" : "Main data about the author",
@@ -680,11 +1060,6 @@
         }, {
           "type" : "object",
           "properties" : {
-            "quotes_count" : {
-              "type" : "integer",
-              "example" : 15,
-              "description" : "The number of quotes by this author"
-            },
             "born" : {
               "type" : "integer",
               "example" : 1892,
@@ -701,9 +1076,42 @@
               "nullable" : true,
               "example" : "An English writer, poet, philologist, and academic, best known as the author of the high fantasy works The Hobbit and The Lord of the Rings.",
               "description" : "Brief info about the author"
+            },
+            "quotes_count" : {
+              "type" : "integer",
+              "example" : 15,
+              "description" : "The number of quotes by this author"
             }
           }
         } ]
+      },
+      "AuthorPayload" : {
+        "description" : "Request data",
+        "type" : "object",
+        "properties" : {
+          "name" : {
+            "type" : "string",
+            "example" : "J.R.R. Tolkien",
+            "description" : "Author full name"
+          },
+          "born" : {
+            "type" : "integer",
+            "example" : 1892,
+            "description" : "Year when author was born"
+          },
+          "died" : {
+            "type" : "integer",
+            "nullable" : true,
+            "example" : 1973,
+            "description" : "Year when author died (if it has happened)"
+          },
+          "bio" : {
+            "type" : "string",
+            "nullable" : true,
+            "example" : "An English writer, poet, philologist, and academic, best known as the author of the high fantasy works The Hobbit and The Lord of the Rings.",
+            "description" : "Brief info about the author"
+          }
+        }
       },
       "Links" : {
         "description" : "Set of pagination links",

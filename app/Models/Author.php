@@ -50,7 +50,14 @@ class Author extends Model
      *
      * @var string[]
      */
-    protected $sortable = ['name' => 'sort_index'];
+    protected array $sortable = ['name' => 'sort_index'];
+
+    /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var array
+     */
+    protected $hidden = ['sort_inde'];
 
     /**
      * The number of models to return for pagination.
