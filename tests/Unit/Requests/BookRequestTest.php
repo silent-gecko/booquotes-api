@@ -43,7 +43,7 @@ class BookRequestTest extends \TestCase
                 'data'    => [
                     'title'       => $faker->title(),
                     'description' => $faker->text(),
-                    'author_id'      => $faker->uuid(),
+                    'author_id'   => $faker->uuid(),
                 ],
                 'message' => 'Validation fails when valid data is provided.',
             ],
@@ -52,7 +52,7 @@ class BookRequestTest extends \TestCase
                 'data'    => [
                     'title'       => $faker->title(),
                     'description' => '',
-                    'author_id'      => $faker->uuid(),
+                    'author_id'   => $faker->uuid(),
                 ],
                 'message' => 'Validation fails when nullable data is null.',
             ],
@@ -61,7 +61,7 @@ class BookRequestTest extends \TestCase
                 'data'    => [
                     'title'       => '',
                     'description' => $faker->text(),
-                    'author_id'      => $faker->uuid(),
+                    'author_id'   => $faker->uuid(),
                 ],
                 'message' => 'Validation passes when title is empty.',
             ],
@@ -70,7 +70,7 @@ class BookRequestTest extends \TestCase
                 'data'    => [
                     'title'       => 123456,
                     'description' => $faker->text(),
-                    'author_id'      => $faker->uuid(),
+                    'author_id'   => $faker->uuid(),
                 ],
                 'message' => 'Validation passes when title is not a string.',
             ],
@@ -79,7 +79,7 @@ class BookRequestTest extends \TestCase
                 'data'    => [
                     'title'       => str_repeat('A', 161),
                     'description' => $faker->text(),
-                    'author_id'      => $faker->uuid(),
+                    'author_id'   => $faker->uuid(),
                 ],
                 'message' => 'Validation passes when title is too long.',
             ],
@@ -88,7 +88,7 @@ class BookRequestTest extends \TestCase
                 'data'    => [
                     'title'       => $faker->title(),
                     'description' => 123456,
-                    'author_id'      => $faker->uuid(),
+                    'author_id'   => $faker->uuid(),
                 ],
                 'message' => 'Validation passes when description is not a string.',
             ],
@@ -97,7 +97,7 @@ class BookRequestTest extends \TestCase
                 'data'    => [
                     'title'       => $faker->title(),
                     'description' => $faker->text(),
-                    'author_id'      => '',
+                    'author_id'   => '',
                 ],
                 'message' => 'Validation passes when author id is empty.',
             ],
@@ -106,7 +106,7 @@ class BookRequestTest extends \TestCase
                 'data'    => [
                     'title'       => $faker->title(),
                     'description' => $faker->text(),
-                    'author_id'      => $faker->name(),
+                    'author_id'   => $faker->name(),
                 ],
                 'message' => 'Validation passes when author id is not a uuid.',
             ],

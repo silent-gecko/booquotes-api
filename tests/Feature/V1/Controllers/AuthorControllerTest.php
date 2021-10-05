@@ -74,7 +74,7 @@ class AuthorControllerTest extends \TestCase
         ]);
     }
 
-    public function test_show_returns_valid_response_with_invalid_id()
+    public function test_show_returns_error_with_invalid_id()
     {
         $this->actingAs($this->user)
             ->json('get', route('v1.author.show', ['uuid' => '0']));
@@ -185,7 +185,7 @@ class AuthorControllerTest extends \TestCase
         $this->missingFromDatabase('authors', $author->attributesToArray());
     }
 
-    public function test_destroy_returns_valid_data_when_cannot_delete()
+    public function test_destroy_returns_error_when_cannot_delete()
     {
         $author = Author::factory()->has(Book::factory()->count(3))->create();
 
