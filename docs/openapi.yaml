@@ -2,7 +2,7 @@ openapi: 3.0.0
 info:
   version: 1.1.0
   title: BooQuotes API
-  description: This API allows to retrieve literary quotes and related info from the data collection
+  description: This API allows to retrieve and operate on literary quotes and related entities of the service data collection.
 servers:
   # Added by API Auto Mocking Plugin
   - description: SwaggerHub API Auto Mocking
@@ -32,13 +32,32 @@ paths:
           $ref: '#/components/responses/QuotesList'
         401:
           $ref: '#/components/responses/Unauthorized'
+    post:
+      security:
+        - ApiKeyAuth: []
+      tags:
+        - quotes
+      summary: Creates new quote
+      requestBody:
+        $ref: '#/components/requestBodies/QuotePayload'
+      responses:
+        201:
+          $ref: '#/components/responses/Created'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        422:
+          $ref: '#/components/responses/UnprocessableEntity'
   /quotes/{uuid}:
+    parameters:
+      - $ref: '#/components/parameters/Uuid'
     get:
       tags:
         - quotes
       summary: Returns single quote
-      parameters:
-        - $ref: '#/components/parameters/Uuid'
       responses:
         200:
           description: Successfully returned single quote item
@@ -49,6 +68,41 @@ paths:
                 properties:
                   data:
                     $ref: '#/components/schemas/Quote'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+    put:
+      security:
+        - ApiKeyAuth: []
+      tags:
+        - quotes
+      summary: Updates quote
+      requestBody:
+        $ref: '#/components/requestBodies/QuotePayload'
+      responses:
+        204:
+          $ref: '#/components/responses/NoContent'
+        400:
+          $ref: '#/components/responses/BadRequest'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        422:
+          $ref: '#/components/responses/UnprocessableEntity'
+    delete:
+      security:
+        - ApiKeyAuth: []
+      tags:
+        - quotes
+      summary:
+        Deletes quote
+      responses:
+        204:
+          $ref: '#/components/responses/NoContent'
         400:
           $ref: '#/components/responses/BadRequest'
         401:
@@ -170,11 +224,7 @@ paths:
         - books
       summary: Creates new book
       requestBody:
-        required: true
-        content:
-          application\json:
-            schema:
-              $ref: '#/components/schemas/BookPayload'
+        $ref: '#/components/requestBodies/BookPayload'
       responses:
         201:
           $ref: '#/components/responses/Created'
@@ -214,11 +264,7 @@ paths:
         - books
       summary: Updates book data
       requestBody:
-        required: true
-        content:
-          aplication\json:
-            schema:
-              $ref: '#/components/schemas/BookPayload'
+        $ref: '#/components/requestBodies/BookPayload'
       responses:
         204:
           $ref: '#/components/responses/NoContent'
@@ -303,11 +349,7 @@ paths:
         - authors
       summary: Adds new author to the collection
       requestBody:
-        required: true
-        content:
-          application\json:
-            schema:
-              $ref: '#/components/schemas/AuthorPayload'
+        $ref: '#/components/requestBodies/AuthorPayload'
       responses:
         201:
           $ref: '#/components/responses/Created'
@@ -344,11 +386,7 @@ paths:
         - authors
       summary: Updates author data
       requestBody:
-        required: true
-        content:
-          application\json:
-            schema:
-              $ref: '#/components/schemas/AuthorPayload'
+        $ref: '#/components/requestBodies/AuthorPayload'
       responses:
         204:
           $ref: '#/components/responses/NoContent'
@@ -400,6 +438,25 @@ components:
         type: string
         format: uuid
       required: true
+  requestBodies:
+    AuthorPayload:
+      required: true
+      content:
+        application\json:
+          schema:
+            $ref: '#/components/schemas/AuthorPayload'
+    BookPayload:
+      required: true
+      content:
+        application\json:
+          schema:
+            $ref: '#/components/schemas/BookPayload'
+    QuotePayload:
+      required: true
+      content:
+        application\json:
+          schema:
+            $ref: '#/components/schemas/QuotePayload'
   responses:
     BadRequest:
       description: Bad Request Error
@@ -566,6 +623,18 @@ components:
               description: Link to the author endpoint
       required:
         - text
+    QuotePayload:
+      description: Request data
+      type: object
+      properties:
+        text:
+          type: string
+          description: The quote itself
+          example: 'There is some good in this world, and it’s worth fighting for.'
+        book_id:
+          type: string
+          format: uuid
+          description: Book unique id
     BookBasic:
       description: Minimal data about the book
       type: object
