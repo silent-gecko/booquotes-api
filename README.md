@@ -42,6 +42,5 @@ docker exec {{php-fpm container name}} php artisan migrate:fresh --seed
 ## Usage
 ### API Docs
 Learn API docs in dev environment at  
-[http://localhost:8088/api-docs/]() or use 
-your favorite instrument to read [.json specification file](./docs/openapi.json) 
+[http://localhost:8088/api-docs/]() or read [.json specification file](./docs/openapi.json) 
 or [.yaml specification file](./docs/openapi.yaml).
