@@ -174,6 +174,22 @@ class AuthorControllerTest extends \TestCase
         $this->assertResponseStatus(Response::HTTP_NOT_FOUND);
     }
 
+    public function test_update_returns_error_with_invalid_uuid()
+    {
+        $invalidId = 123456;
+        $payload = [
+            'name' => 'Some Updated Guy',
+            'born' => 1929,
+            'died' => 2012,
+            'bio'  => 'Some updated bio',
+        ];
+
+        $this->actingAs($this->user)
+            ->put(route('v1.author.update', ['uuid' => $invalidId]), $payload);
+
+        $this->assertResponseStatus(Response::HTTP_BAD_REQUEST);
+    }
+
     public function test_destroy_returns_valid_data_with_valid_id()
     {
         $author = Author::factory()->create();
@@ -204,5 +220,15 @@ class AuthorControllerTest extends \TestCase
             ->delete(route('v1.author.destroy', ['uuid' => $nonExistingUuid]));
 
         $this->assertResponseStatus(Response::HTTP_NOT_FOUND);
+    }
+
+    public function test_destroy_returns_error_with_invalid_uuid()
+    {
+        $invalidId = 123456;
+
+        $this->actingAs($this->user)
+            ->delete(route('v1.author.destroy', ['uuid' => $invalidId]));
+
+        $this->assertResponseStatus(Response::HTTP_BAD_REQUEST);
     }
 }

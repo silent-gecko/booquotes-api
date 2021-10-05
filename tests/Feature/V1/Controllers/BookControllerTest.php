@@ -176,6 +176,21 @@ class BookControllerTest extends TestCase
         $this->assertResponseStatus(Response::HTTP_NOT_FOUND);
     }
 
+    public function test_update_returns_error_with_invalid_uuid()
+    {
+        $invalidId = 123456;
+        $author = Author::factory()->create();
+        $payload = [
+            'author_id' => $author->id->toString(),
+            'title'=> 'Some Updated Title',
+            'description' => 'Updated description',
+        ];
+
+        $this->actingAs($this->user)->put(route('v1.book.update', ['uuid' => $invalidId]), $payload);
+
+        $this->assertResponseStatus(Response::HTTP_BAD_REQUEST);
+    }
+
     public function test_destroy_returns_valid_response_with_valid_id()
     {
         $book = Book::factory()->create();
@@ -203,5 +218,14 @@ class BookControllerTest extends TestCase
 
         $this->assertResponseStatus(Response::HTTP_CONFLICT);
         $this->seeInDatabase('books', $book->attributesToArray());
+    }
+
+    public function test_destroy_returns_error_with_invalid_uuid()
+    {
+        $invalidId = 123456;
+
+        $this->actingAs($this->user)->delete(route('v1.book.destroy', ['uuid' => $invalidId]));
+
+        $this->assertResponseStatus(Response::HTTP_BAD_REQUEST);
     }
 }
