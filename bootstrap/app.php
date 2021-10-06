@@ -95,6 +95,7 @@ $app->middleware([
 $app->register(App\Providers\AppServiceProvider::class);
 $app->register(App\Providers\AuthServiceProvider::class);
 $app->register(\App\Providers\ResponseServiceProvider::class);
+$app->register(Pearl\RequestValidate\RequestServiceProvider::class);
 // $app->register(App\Providers\EventServiceProvider::class);
 
 /*
