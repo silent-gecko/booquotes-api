@@ -1,8 +1,8 @@
 # BooQuotes API
 This API allows retrieving literary quotes from data collection.
 
-:warning: This is an example of REST API I'm developing by myself.
-It exists solely for me to improve and show my skills to the others. 
+:warning: This is an example of REST API which I'm developing by myself.
+It exists solely for me to improve my skills and show result to the others. 
 Personal use only.
 
 ## Installation
@@ -22,7 +22,7 @@ Open terminal in the project directory and run:
 docker-compose -f docker-compose.dev.yml up # development 
 docker-compose  up                          # production
 ```
-Development mode includes extra services: `XDedug` in code coverage mode + `Swagger-UI`
+Development mode includes extra services: `XDedug` (code coverage mode) + `Swagger-UI`
 
 ### Migrate DB tables and seed the data
 Open terminal inside the php-fpm container: 
@@ -42,6 +42,6 @@ docker exec {{php-fpm container name}} php artisan migrate:fresh --seed
 ## Usage
 ### API Docs
 Learn API docs in dev environment at  
-[http://localhost:8088/api-docs/]() or use 
-your favorite instrument to read [.json specification file](./docs/openapi.json) 
-or [.yaml specification file](./docs/openapi.yaml).
+[http://localhost:8088/api-docs/]() or see on 
+[SwaggerHub](https://app.swaggerhub.com/apis/silent-gecko/Quotes/1.1.0) or use plain [.json specification file](./docs/openapi.json) 
+or [.yaml specification file](./docs/openapi.yaml) from source code.
