@@ -17,7 +17,7 @@ class CreateBooksTable extends Migration
             $table->uuid('id')->primary()->default(DB::raw('uuid_generate_v4()'));
             $table->string('sort_index');
             $table->string('title');
-            $table->text('description');
+            $table->text('description')->nullable();
             $table->uuid('author_id');
 
             $table->foreign('author_id')
