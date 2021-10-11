@@ -49,7 +49,7 @@ class QuoteController extends Controller
         $data = $quote->toArray();
         $image = SnappyImage::loadView('img.quote', $data);
 
-        return $image->inline("{$quote->short_filename}.jpg");
+        return $image->download("{$quote->short_filename}.jpg");
     }
 
     /**
