@@ -6,15 +6,15 @@ use App\Http\Requests\QuoteRequest;
 use App\Models\Quote;
 use App\Http\Resources\QuoteCollection;
 use App\Http\Resources\QuoteResource;
+use Barryvdh\Snappy\Facades\SnappyImage;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\DB;
 
 class QuoteController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('check_uuid', ['only' => ['show', 'update', 'destroy']]);
+        $this->middleware('check_uuid', ['only' => ['show', 'update', 'destroy', 'downloadImage']]);
     }
 
     /**
@@ -41,6 +41,14 @@ class QuoteController extends Controller
     public function showRandom()
     {
         return new QuoteResource(Quote::inRandomOrder()->first());
+    }
+
+    public function downloadImage(string $uuid)
+    {
+        $data = Quote::findOrFail($uuid)->toArray();
+        $image = SnappyImage::loadView('img.quote', $data);
+
+        return $image->inline('test.jpg');
     }
 
     /**
