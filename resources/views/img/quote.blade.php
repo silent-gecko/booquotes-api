@@ -20,9 +20,9 @@
 
       body {
         background: -webkit-linear-gradient(90deg, #89a3ab, #859fa9, #809ba7, #7c98a5, #7994a3, #7590a0, #728c9e, #6f889c);
-        width: 1080px;
-        height: 1080px;
-        line-height: 1080px;
+        width: 1072px;
+        height: 1072px;
+        line-height: 1072px;
         text-align: center;
       }
 
