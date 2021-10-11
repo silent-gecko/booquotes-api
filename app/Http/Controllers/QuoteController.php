@@ -49,6 +49,8 @@ class QuoteController extends Controller
         $data = $quote->toArray();
         $image = SnappyImage::loadView('img.quote', $data);
 
+        // TODO: decide what version to use
+        // return response()->json(['data' => ['file' => base64_encode($image->output())]]);
         return $image->download("{$quote->short_filename}.jpg");
     }
 
