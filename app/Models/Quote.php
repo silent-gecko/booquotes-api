@@ -40,7 +40,7 @@ class Quote extends Model
      *
      * @var string[]
      */
-    protected $sortable = [
+    protected array $sortable = [
         'date'   => 'created_at',
         'book'   => 'book.sort_index',
         'author' => 'author.sort_index',

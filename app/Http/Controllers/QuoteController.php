@@ -45,10 +45,11 @@ class QuoteController extends Controller
 
     public function downloadImage(string $uuid)
     {
-        $data = Quote::findOrFail($uuid)->toArray();
+        $quote = Quote::findOrFail($uuid);
+        $data = $quote->toArray();
         $image = SnappyImage::loadView('img.quote', $data);
 
-        return $image->inline('test.jpg');
+        return $image->inline("{$quote->short_filename}.jpg");
     }
 
     /**
