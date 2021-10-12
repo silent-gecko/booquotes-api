@@ -50,7 +50,7 @@ class QuoteController extends Controller
     {
         $quote = Quote::findOrFail($uuid);
         $data = $quote->toArray();
-        $image = Cache::remember('quoteImage_' . $quote->id, self::IMAGE_TTL, function() use ($data) {
+        $image = Cache::remember('quoteImage_' . $quote->id, self::IMAGE_TTL, function () use ($data) {
             return SnappyImage::loadView('img.quote', $data)->output();
         });
 
@@ -58,8 +58,8 @@ class QuoteController extends Controller
         // return response()->json(['data' => ['file' => base64_encode($image)]]);
 
         return response($image, 200, [
-            'Content-Type' => 'image/jpeg',
-            'Content-Disposition' =>  'attachment; filename="'.$quote->short_filename.'"'
+            'Content-Type'        => 'image/jpeg',
+            'Content-Disposition' => 'attachment; filename="' . $quote->short_filename . '"'
         ]);
     }
 
@@ -91,7 +91,7 @@ class QuoteController extends Controller
     }
 
     /**
-     * @param string       $uuid
+     * @param string $uuid
      *
      * @return Response|\Laravel\Lumen\Http\ResponseFactory
      */

@@ -5,6 +5,7 @@ namespace Feature\V1\Controllers;
 use App\Models\Book;
 use App\Models\User;
 use Faker\Factory;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 use Laravel\Lumen\Testing\DatabaseTransactions;
 use Symfony\Component\HttpFoundation\Response;
@@ -246,5 +247,43 @@ class QuoteControllerTest extends \TestCase
         $this->actingAs($this->user)->delete(route('v1.quote.destroy', ['uuid' => $invalidId]));
 
         $this->assertResponseStatus(Response::HTTP_BAD_REQUEST);
+    }
+
+    public function test_image_returns_valid_response()
+    {
+        $quote = Quote::factory()->create();
+
+        $this->actingAs($this->user)->get(route('v1.quote.image', ['uuid' => $quote->id]));
+
+        $this->assertResponseStatus(Response::HTTP_OK);
+        $this->seeHeader('Content-Type', 'image/jpeg');
+        $this->seeHeader('Content-Disposition', 'attachment; filename="' . $quote->short_filename . '"');
+    }
+
+    public function test_image_returns_error_with_invalid_uuid()
+    {
+        $invalidId = 123456;
+
+        $this->actingAs($this->user)->get(route('v1.quote.image', ['uuid' => $invalidId]));
+
+        $this->assertResponseStatus(Response::HTTP_BAD_REQUEST);
+    }
+
+    public function test_image_returns_error_with_not_found_id()
+    {
+        $nonExistingUuid = substr_replace(Str::uuid()->toString(), 'aaaaa', -5);
+
+        $this->actingAs($this->user)->get(route('v1.quote.image', ['uuid' => $nonExistingUuid]));
+
+        $this->assertResponseStatus(Response::HTTP_NOT_FOUND);
+    }
+
+    public function test_image_creates_cache()
+    {
+        $quote = Quote::factory()->create();
+
+        $this->actingAs($this->user)->get(route('v1.quote.image', ['uuid' => $quote->id]));
+
+        $this->assertNotEmpty(Cache::get('quoteImage_' . $quote->id));
     }
 }
