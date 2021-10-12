@@ -9,9 +9,12 @@ use App\Http\Resources\QuoteResource;
 use Barryvdh\Snappy\Facades\SnappyImage;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Cache;
 
 class QuoteController extends Controller
 {
+    const IMAGE_TTL = 2592000; // 30 days
+
     public function __construct()
     {
         $this->middleware('check_uuid', ['only' => ['show', 'update', 'destroy', 'downloadImage']]);
@@ -47,11 +50,17 @@ class QuoteController extends Controller
     {
         $quote = Quote::findOrFail($uuid);
         $data = $quote->toArray();
-        $image = SnappyImage::loadView('img.quote', $data);
+        $image = Cache::remember('quoteImage_' . $quote->id, self::IMAGE_TTL, function() use ($data) {
+            return SnappyImage::loadView('img.quote', $data)->output();
+        });
 
         // TODO: decide what version to use
-        // return response()->json(['data' => ['file' => base64_encode($image->output())]]);
-        return $image->download("{$quote->short_filename}.jpg");
+        // return response()->json(['data' => ['file' => base64_encode($image)]]);
+
+        return response($image, 200, [
+            'Content-Type' => 'image/jpeg',
+            'Content-Disposition' =>  'attachment; filename="'.$quote->short_filename.'"'
+        ]);
     }
 
     /**
