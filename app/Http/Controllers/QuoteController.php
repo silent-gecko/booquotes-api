@@ -6,15 +6,18 @@ use App\Http\Requests\QuoteRequest;
 use App\Models\Quote;
 use App\Http\Resources\QuoteCollection;
 use App\Http\Resources\QuoteResource;
+use Barryvdh\Snappy\Facades\SnappyImage;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 
 class QuoteController extends Controller
 {
+    const IMAGE_TTL = 2592000; // 30 days
+
     public function __construct()
     {
-        $this->middleware('check_uuid', ['only' => ['show', 'update', 'destroy']]);
+        $this->middleware('check_uuid', ['only' => ['show', 'update', 'destroy', 'downloadImage']]);
     }
 
     /**
@@ -41,6 +44,23 @@ class QuoteController extends Controller
     public function showRandom()
     {
         return new QuoteResource(Quote::inRandomOrder()->first());
+    }
+
+    public function downloadImage(string $uuid)
+    {
+        $quote = Quote::findOrFail($uuid);
+        $data = $quote->toArray();
+        $image = Cache::remember('quoteImage_' . $quote->id, self::IMAGE_TTL, function () use ($data) {
+            return SnappyImage::loadView('img.quote', $data)->output();
+        });
+
+        // TODO: decide what version to use
+        // return response()->json(['data' => ['file' => base64_encode($image)]]);
+
+        return response($image, 200, [
+            'Content-Type'        => 'image/jpeg',
+            'Content-Disposition' => 'attachment; filename="' . $quote->short_filename . '"'
+        ]);
     }
 
     /**
@@ -71,7 +91,7 @@ class QuoteController extends Controller
     }
 
     /**
-     * @param string       $uuid
+     * @param string $uuid
      *
      * @return Response|\Laravel\Lumen\Http\ResponseFactory
      */

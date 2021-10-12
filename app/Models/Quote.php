@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Extensions\Traits\HasUuid;
 use App\Extensions\Traits\Sortable;
+use Illuminate\Support\Str;
 
 class Quote extends Model
 {
@@ -39,7 +40,7 @@ class Quote extends Model
      *
      * @var string[]
      */
-    protected $sortable = [
+    protected array $sortable = [
         'date'   => 'created_at',
         'book'   => 'book.sort_index',
         'author' => 'author.sort_index',
@@ -108,5 +109,17 @@ class Quote extends Model
     public function getAuthorLinkAttribute()
     {
         return route('v1.author.show', ['uuid' => $this->book->author->id]);
+    }
+
+    /**
+     * @return string
+     */
+    public function getShortFilenameAttribute()
+    {
+        $cleanAuthorName = preg_replace('/[\W]+/', '', $this->author->name);
+        $cleanQuotePart = Str::words(preg_replace('/[^a-zA-Z ]+/', '', $this->text), 4, 'Etc');
+        $shortFilename = Str::snake(config('app.name') . $cleanQuotePart . 'By' . $cleanAuthorName);
+
+        return $shortFilename;
     }
 }

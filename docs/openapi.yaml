@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: 1.1.0
+  version: 1.1.1
   title: BooQuotes API
   description: This API allows to retrieve and operate on literary quotes and related entities of the service data collection.
 servers:
@@ -109,9 +109,8 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         404:
           $ref: '#/components/responses/NotFound'
-  /quotes/{uuid}/download:
+  /quotes/{uuid}/image:
     get:
-      deprecated: true
       tags:
         - quotes
       summary: Returns an image with formatted quote data on it
@@ -119,12 +118,12 @@ paths:
         - $ref: '#/components/parameters/Uuid'
       responses:
         200:
-          description: Quote image in PNG format
+          description: Quote image in .jpg format
           content:
-            image\png:
+            image\jpeg:
               schema:
                 type: string
-                format: base64
+                format: binary
   /quotes/random:
     get:
       tags:
