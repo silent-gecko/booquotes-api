@@ -119,6 +119,6 @@ class Author extends Model
     public function setNameAttribute($value): void
     {
         $this->attributes['name'] = trim($value);
-        $this->attributes['sort_index'] = Str::lower(Str::afterLast($value, ''));
+        $this->attributes['sort_index'] = Str::lower(Str::afterLast($value, ' '));
     }
 }
