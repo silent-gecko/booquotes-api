@@ -54,9 +54,6 @@ class QuoteController extends Controller
             return SnappyImage::loadView('img.quote', $data)->output();
         });
 
-        // TODO: decide what version to use
-        // return response()->json(['data' => ['file' => base64_encode($image)]]);
-
         return response($image, 200, [
             'Content-Type'        => 'image/jpeg',
             'Content-Disposition' => 'attachment; filename="' . $quote->short_filename . '"'
