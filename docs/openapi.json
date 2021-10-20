@@ -1,13 +1,13 @@
 {
   "openapi" : "3.0.0",
   "info" : {
-    "version" : "1.1.0",
+    "version" : "1.1.1",
     "title" : "BooQuotes API",
     "description" : "This API allows to retrieve and operate on literary quotes and related entities of the service data collection."
   },
   "servers" : [ {
     "description" : "SwaggerHub API Auto Mocking",
-    "url" : "https://virtserver.swaggerhub.com/silent-gecko/Quotes/1.1.0"
+    "url" : "https://virtserver.swaggerhub.com/silent-gecko/Quotes/1.0.0"
   }, {
     "description" : "Local development server",
     "url" : "http://localhost:8080/api/v1"
@@ -153,9 +153,8 @@
         }
       }
     },
-    "/quotes/{uuid}/download" : {
+    "/quotes/{uuid}/image" : {
       "get" : {
-        "deprecated" : true,
         "tags" : [ "quotes" ],
         "summary" : "Returns an image with formatted quote data on it",
         "parameters" : [ {
@@ -163,12 +162,12 @@
         } ],
         "responses" : {
           "200" : {
-            "description" : "Quote image in PNG format",
+            "description" : "Quote image in .jpg format",
             "content" : {
-              "image\\png" : {
+              "image\\jpeg" : {
                 "schema" : {
                   "type" : "string",
-                  "format" : "base64"
+                  "format" : "binary"
                 }
               }
             }

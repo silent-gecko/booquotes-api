@@ -46,6 +46,8 @@ $router->group(['prefix' => 'api/v1'], function () use ($router) {
         $router->get('/quotes', ['as' => 'v1.quote.index', 'uses' => 'QuoteController@index']);
         $router->get('/quotes/random', ['as' => 'v1.quote.random', 'uses' => 'QuoteController@showRandom']);
         $router->get('/quotes/{uuid}', ['as' => 'v1.quote.show', 'uses' => 'QuoteController@show']);
+
+        $router->get('/quotes/{uuid}/image/', ['as' => 'v1.quote.image', 'uses' => 'QuoteController@downloadImage']);
     });
 
     $router->group(['middleware' => 'auth'], function () use ($router) {
