@@ -44,6 +44,7 @@ class QuoteControllerTest extends \TestCase
                     ],
                     'links'  => [
                         'self',
+                        'image',
                         'book',
                         'author',
                     ]
@@ -74,6 +75,7 @@ class QuoteControllerTest extends \TestCase
                 ],
                 'links'  => [
                     'self',
+                    'image',
                     'book',
                     'author',
                 ]
@@ -103,6 +105,7 @@ class QuoteControllerTest extends \TestCase
                 ],
                 'links'  => [
                     'self'   => $quote->self_link,
+                    'image'  => $quote->image_link,
                     'book'   => $quote->book_link,
                     'author' => $quote->author_link,
                 ]
@@ -135,7 +138,7 @@ class QuoteControllerTest extends \TestCase
         $book = Book::factory()->create();
         $payload = [
             'book_id' => $book->id,
-            'text' => $this->faker->text(),
+            'text'    => $this->faker->text(),
         ];
 
         $this->actingAs($this->user)->json('post', route('v1.quote.store'), $payload);
@@ -150,7 +153,7 @@ class QuoteControllerTest extends \TestCase
         $nonExistingUuid = substr_replace(Str::uuid()->toString(), 'aaaaa', -5);
         $payload = [
             'book_id' => $nonExistingUuid,
-            'text' => $this->faker->text(),
+            'text'    => $this->faker->text(),
         ];
 
         $this->actingAs($this->user)->json('post', route('v1.quote.store'), $payload);
@@ -167,7 +170,7 @@ class QuoteControllerTest extends \TestCase
         $quote = Quote::factory()->for($book)->create();
         $payload = [
             'book_id' => $anotherBook->id->toString(),
-            'text' => $this->faker->text(),
+            'text'    => $this->faker->text(),
         ];
 
         $this->actingAs($this->user)->put(route('v1.quote.update', ['uuid' => $quote->id]), $payload);
@@ -183,7 +186,7 @@ class QuoteControllerTest extends \TestCase
         $quote = Quote::factory()->for($book)->create();
         $payload = [
             'book_id' => $nonExistingUuid,
-            'text' => $this->faker->text(),
+            'text'    => $this->faker->text(),
         ];
 
         $this->actingAs($this->user)->put(route('v1.quote.update', ['uuid' => $quote->id]), $payload);
@@ -199,7 +202,7 @@ class QuoteControllerTest extends \TestCase
         $nonExistingUuid = substr_replace(Str::uuid()->toString(), 'aaaaa', -5);
         $payload = [
             'book_id' => $book->id->toString(),
-            'text' => $this->faker->text(),
+            'text'    => $this->faker->text(),
         ];
 
         $this->actingAs($this->user)->put(route('v1.quote.update', ['uuid' => $nonExistingUuid]), $payload);
@@ -213,7 +216,7 @@ class QuoteControllerTest extends \TestCase
         $invalidId = 123456;
         $payload = [
             'book_id' => $book->id->toString(),
-            'text' => $this->faker->text(),
+            'text'    => $this->faker->text(),
         ];
 
         $this->actingAs($this->user)->put(route('v1.quote.update', ['uuid' => $invalidId]), $payload);
@@ -228,7 +231,6 @@ class QuoteControllerTest extends \TestCase
         $this->actingAs($this->user)->delete(route('v1.quote.destroy', ['uuid' => $quote->id]));
         $this->assertResponseStatus(Response::HTTP_NO_CONTENT);
         $this->missingFromDatabase('quotes', $quote->attributesToArray());
-
     }
 
     public function test_destroy_returns_error_with_not_found_id()

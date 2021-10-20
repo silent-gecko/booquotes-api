@@ -29,6 +29,7 @@ class QuoteResource extends JsonResource
             ],
             'links'  => [
                 'self'   => $this->self_link,
+                'image'  => $this->image_link,
                 'book'   => $this->book_link,
                 'author' => $this->author_link,
             ]

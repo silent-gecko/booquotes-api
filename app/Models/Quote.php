@@ -85,15 +85,6 @@ class Quote extends Model
     }
 
     /**
-     * Get link to quote endpoint
-     * @return string
-     */
-    public function getSelfLinkAttribute()
-    {
-        return route('v1.quote.show', ['uuid' => $this->id]);
-    }
-
-    /**
      * Get link to quote book endpoint
      * @return string
      */
@@ -109,6 +100,15 @@ class Quote extends Model
     public function getAuthorLinkAttribute()
     {
         return route('v1.author.show', ['uuid' => $this->book->author->id]);
+    }
+
+    /**
+     * Get link to the image downloading endpoint
+     * @return string
+     */
+    public function getImageLinkAttribute()
+    {
+        return route('v1.quote.image', ['uuid' => $this->id]);
     }
 
     /**

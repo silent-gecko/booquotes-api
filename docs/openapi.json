@@ -7,7 +7,7 @@
   },
   "servers" : [ {
     "description" : "SwaggerHub API Auto Mocking",
-    "url" : "https://virtserver.swaggerhub.com/silent-gecko/Quotes/1.0.0"
+    "url" : "https://virtserver.swaggerhub.com/silent-gecko/Quotes/1.1.1"
   }, {
     "description" : "Local development server",
     "url" : "http://localhost:8080/api/v1"
@@ -888,6 +888,11 @@
                 "type" : "string",
                 "format" : "url",
                 "description" : "Link to the quote endpoint"
+              },
+              "image" : {
+                "type" : "string",
+                "format" : "url",
+                "description" : "Link to the image downloading endpoint"
               },
               "book" : {
                 "type" : "string",

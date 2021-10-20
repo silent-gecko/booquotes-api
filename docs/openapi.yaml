@@ -612,6 +612,10 @@ components:
               type: string
               format: url
               description: Link to the quote endpoint
+            image:
+              type: string
+              format: url
+              description: Link to the image downloading endpoint
             book:
               type: string
               format: url
