@@ -30,6 +30,7 @@ services:
 
     swagger-ui:
         image: 'swaggerapi/swagger-ui'
+        working_dir: /application
         volumes:
             -  '${APP_DIR}:/application'
         ports:
